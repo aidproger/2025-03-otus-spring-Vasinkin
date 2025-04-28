@@ -37,7 +37,7 @@ public class CsvQuestionDao implements QuestionDao {
 
         } catch (Exception e) {
             throw new QuestionReadException("Error reading csv resource file '"
-                    + fileNameProvider.getTestFileName() + "'...");
+                    + fileNameProvider.getTestFileName() + "'...", e);
         }
     }
 }
