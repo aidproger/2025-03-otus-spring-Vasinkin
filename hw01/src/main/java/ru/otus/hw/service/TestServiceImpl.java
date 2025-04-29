@@ -36,9 +36,8 @@ public class TestServiceImpl implements TestService {
     }
 
     private void displayQuestionsAndAnswers(@NonNull List<Question> questions) {
-        Question question;
         for (int i = 0; i < questions.size(); i++) {
-            question = questions.get(i);
+            Question question = questions.get(i);
             ioService.printFormattedLine(
                     testRenderer.getQuestionRenderer(),
                     i + 1,
@@ -46,7 +45,6 @@ public class TestServiceImpl implements TestService {
             ioService.printFormattedLine(
                     testRenderer.getAnswerRenderer(question.answers().size()),
                     question.answers().toArray(new Answer[0]));
-
         }
     }
 
