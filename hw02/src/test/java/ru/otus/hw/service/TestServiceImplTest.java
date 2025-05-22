@@ -4,13 +4,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import ru.otus.hw.common.TestDataGenerator;
 import ru.otus.hw.dao.QuestionDao;
-import ru.otus.hw.domain.Answer;
 import ru.otus.hw.domain.Question;
 import ru.otus.hw.domain.Student;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
@@ -23,56 +22,55 @@ public class TestServiceImplTest {
 
     private QuestionDao questionDao;
 
+    private TestRendererService testRendererService;
+
     private TestServiceImpl testService;
 
     @BeforeEach
     void setUp() {
         ioService = mock(IOService.class);
         questionDao = mock(QuestionDao.class);
-        testService = new TestServiceImpl(ioService, questionDao, mock(TestRenderer.class));
+        testRendererService = mock(TestRendererService.class);
+        testService = new TestServiceImpl(ioService, questionDao, testRendererService);
     }
 
-    @DisplayName("должен корректно отображать вопросы, ответы и возвращать правильный результат ")
+    @DisplayName("должен возвращать правильный результат при тестирование студента по списку вопросов")
     @Test
-    void shouldCorrectRenderingQuestionsAndAnswers() {
+    void shouldCorrectTestingStudentByQuestions() {
 
         var student = new Student("Ivan", "Ivanov");
 
-        var questions = new ArrayList<>(Arrays.asList(
-                new Question("Question1",
-                        new ArrayList<>(Arrays.asList(
-                                new Answer("Answer1", false),
-                                new Answer("Answer2", true)))),
-                new Question("Question2",
-                        new ArrayList<>(Arrays.asList(
-                                new Answer("Answer3", true),
-                                new Answer("Answer4", false))))
-        ));
+        var expectedQuestions = TestDataGenerator.generateExpectedQuestionsForCSVTest();
+        var expectedNumbersOfQuestions = List.of(1, 2, 3, 4, 5, 6);
 
-        var expectedPrintFormattedLineInStreamsIO = new ArrayList<>(Arrays.asList(
-                new Object[]{},
-                new Object[]{1, "Question1"},
-                new Object[]{new Answer("Answer1", false),
-                        new Answer("Answer2", true)},
-                new Object[]{2, "Question2"},
-                new Object[]{new Answer("Answer3", true),
-                        new Answer("Answer4", false)}
-        ));
-
-        given(questionDao.findAll()).willReturn(questions);
-        given(ioService.readIntForRangeWithPrompt(1, 2, "Choose number of right answer",
-                "Number of answer not found! Choose number of right answer again")).willReturn(2);
+        given(questionDao.findAll()).willReturn(expectedQuestions);
+        given(ioService.readIntForRangeWithPrompt(1, 3, "Choose number of right answer",
+                "Number of answer not found! Choose number of right answer again")).willReturn(1);
+        given(ioService.readIntForRangeWithPrompt(1, 4, "Choose number of right answer",
+                "Number of answer not found! Choose number of right answer again")).willReturn(1);
         var stringCaptor = ArgumentCaptor.forClass(String.class);
         var varargsCaptor = ArgumentCaptor.forClass(Object[].class);
+        var questionCaptor = ArgumentCaptor.forClass(Question.class);
+        var questionForAnswerCaptor = ArgumentCaptor.forClass(Question.class);
+        var integerCaptor = ArgumentCaptor.forClass(Integer.class);
 
         var testResult = testService.executeTestFor(student);
 
         verify(questionDao, times(1)).findAll();
-        verify(ioService, times(5)).printFormattedLine(stringCaptor.capture(), varargsCaptor.capture());
-        var actualPrintFormattedLineInStreamsIO = varargsCaptor.getAllValues();
-        assertThat(actualPrintFormattedLineInStreamsIO).containsExactlyElementsOf(expectedPrintFormattedLineInStreamsIO);
+        verify(ioService, times(1)).printFormattedLine(stringCaptor.capture(), varargsCaptor.capture());
+        verify(ioService, times(13)).printLine(stringCaptor.capture());
+        verify(testRendererService, times(6)).createQuestionRenderer(questionCaptor.capture(), integerCaptor.capture());
+        verify(testRendererService, times(6)).createAnswersRenderer(questionForAnswerCaptor.capture());
 
-        assertThat(testResult.getAnsweredQuestions()).containsExactlyElementsOf(questions);
-        assertThat(testResult.getRightAnswersCount()).isEqualTo(1);
+        var actualCreateQuestionRenderer = questionCaptor.getAllValues();
+        assertThat(actualCreateQuestionRenderer).containsExactlyElementsOf(expectedQuestions);
+        var actualNumbersOfQuestions = integerCaptor.getAllValues();
+        assertThat(actualNumbersOfQuestions).containsExactlyElementsOf(expectedNumbersOfQuestions);
+
+        var actualCreateAnswersRenderer = questionForAnswerCaptor.getAllValues();
+        assertThat(actualCreateAnswersRenderer).containsExactlyElementsOf(expectedQuestions);
+
+        assertThat(testResult.getAnsweredQuestions()).containsExactlyElementsOf(expectedQuestions);
+        assertThat(testResult.getRightAnswersCount()).isEqualTo(3);
     }
 }
