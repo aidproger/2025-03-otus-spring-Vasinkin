@@ -11,12 +11,8 @@ import ru.otus.hw.service.TestRunnerService;
 public class Application {
 
     public static void main(String[] args) {
-        try {
-            ApplicationContext context = new AnnotationConfigApplicationContext(Application.class);
-            var testRunnerService = context.getBean(TestRunnerService.class);
-            testRunnerService.run();
-        } catch (Exception e) {
-            System.out.println("Error running application");
-        }
+        ApplicationContext context = new AnnotationConfigApplicationContext(Application.class);
+        var testRunnerService = context.getBean(TestRunnerService.class);
+        testRunnerService.run();
     }
 }

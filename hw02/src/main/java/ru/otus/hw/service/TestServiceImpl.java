@@ -14,7 +14,7 @@ public class TestServiceImpl implements TestService {
 
     private final QuestionDao questionDao;
 
-    private final TestRendererService testRendererService;
+    private final QuestionConverter questionConverter;
 
     @Override
     public TestResult executeTestFor(Student student) {
@@ -26,8 +26,8 @@ public class TestServiceImpl implements TestService {
 
         for (int i = 0; i < questions.size(); i++) {
             var question = questions.get(i);
-            ioService.printLine(testRendererService.createQuestionRenderer(question, i + 1));
-            ioService.printLine(testRendererService.createAnswersRenderer(question));
+            var strQuestionForOutput = questionConverter.convertQuestionToString(question, i + 1);
+            ioService.printLine(strQuestionForOutput);
             var number = chooseNumberOfAnswer(question.answers().size());
             var isAnswerValid = question.answers().get(number - 1).isCorrect();
             testResult.applyAnswer(question, isAnswerValid);

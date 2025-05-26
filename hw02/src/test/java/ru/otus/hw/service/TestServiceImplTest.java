@@ -22,7 +22,7 @@ public class TestServiceImplTest {
 
     private QuestionDao questionDao;
 
-    private TestRendererService testRendererService;
+    private QuestionConverter questionConverter;
 
     private TestServiceImpl testService;
 
@@ -30,8 +30,8 @@ public class TestServiceImplTest {
     void setUp() {
         ioService = mock(IOService.class);
         questionDao = mock(QuestionDao.class);
-        testRendererService = mock(TestRendererService.class);
-        testService = new TestServiceImpl(ioService, questionDao, testRendererService);
+        questionConverter = mock(QuestionConverter.class);
+        testService = new TestServiceImpl(ioService, questionDao, questionConverter);
     }
 
     @DisplayName("должен возвращать правильный результат при тестирование студента по списку вопросов")
@@ -51,24 +51,19 @@ public class TestServiceImplTest {
         var stringCaptor = ArgumentCaptor.forClass(String.class);
         var varargsCaptor = ArgumentCaptor.forClass(Object[].class);
         var questionCaptor = ArgumentCaptor.forClass(Question.class);
-        var questionForAnswerCaptor = ArgumentCaptor.forClass(Question.class);
         var integerCaptor = ArgumentCaptor.forClass(Integer.class);
 
         var testResult = testService.executeTestFor(student);
 
         verify(questionDao, times(1)).findAll();
         verify(ioService, times(1)).printFormattedLine(stringCaptor.capture(), varargsCaptor.capture());
-        verify(ioService, times(13)).printLine(stringCaptor.capture());
-        verify(testRendererService, times(6)).createQuestionRenderer(questionCaptor.capture(), integerCaptor.capture());
-        verify(testRendererService, times(6)).createAnswersRenderer(questionForAnswerCaptor.capture());
+        verify(ioService, times(7)).printLine(stringCaptor.capture());
+        verify(questionConverter, times(6)).convertQuestionToString(questionCaptor.capture(), integerCaptor.capture());
 
         var actualCreateQuestionRenderer = questionCaptor.getAllValues();
         assertThat(actualCreateQuestionRenderer).containsExactlyElementsOf(expectedQuestions);
         var actualNumbersOfQuestions = integerCaptor.getAllValues();
         assertThat(actualNumbersOfQuestions).containsExactlyElementsOf(expectedNumbersOfQuestions);
-
-        var actualCreateAnswersRenderer = questionForAnswerCaptor.getAllValues();
-        assertThat(actualCreateAnswersRenderer).containsExactlyElementsOf(expectedQuestions);
 
         assertThat(testResult.getAnsweredQuestions()).containsExactlyElementsOf(expectedQuestions);
         assertThat(testResult.getRightAnswersCount()).isEqualTo(3);
