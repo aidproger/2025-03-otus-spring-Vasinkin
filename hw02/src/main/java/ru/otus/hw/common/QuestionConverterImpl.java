@@ -1,4 +1,4 @@
-package ru.otus.hw.service;
+package ru.otus.hw.common;
 
 import lombok.NonNull;
 import org.springframework.stereotype.Component;

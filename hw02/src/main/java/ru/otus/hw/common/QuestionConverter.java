@@ -1,4 +1,4 @@
-package ru.otus.hw.service;
+package ru.otus.hw.common;
 
 import ru.otus.hw.domain.Question;
 
