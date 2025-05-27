@@ -23,7 +23,7 @@ public class QuestionConverterImpl implements QuestionConverter {
     private String convertAnswersToString(List<Answer> answers) {
         var sb = new StringBuilder();
         for (int i = 0; i < answers.size(); i++) {
-            sb.append(ANSWER_TEMPLATE.formatted(i + 1, answers.get(i)));
+            sb.append(ANSWER_TEMPLATE.formatted(i + 1, answers.get(i).text()));
         }
         return sb.toString();
     }
