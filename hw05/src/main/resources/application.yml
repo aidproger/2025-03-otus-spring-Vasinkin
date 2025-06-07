@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:maindb
+  h2:
+    console:
+      path: /h2-console
+      settings:
+        web-allow-others: false
+  shell:
+    interactive:
+      enabled: true
+  liquibase:
+    enabled: true
