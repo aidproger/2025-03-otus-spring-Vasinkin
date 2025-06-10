@@ -16,10 +16,10 @@ import ru.otus.hw.models.Genre;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.ArrayList;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -33,7 +33,7 @@ public class JdbcBookRepository implements BookRepository {
 
     @Override
     public Optional<Book> findById(long id) {
-        return getBookByIdWithoutGenres(id);
+        return getBookByIdWithGenres(id);
     }
 
     @Override
@@ -58,7 +58,7 @@ public class JdbcBookRepository implements BookRepository {
         namedParameterJdbcOperations.update("DELETE FROM books WHERE id=:id", Map.of("id", id));
     }
 
-    private Optional<Book> getBookByIdWithoutGenres(long id) {
+    private Optional<Book> getBookByIdWithGenres(long id) {
         try {
             return Optional.of(namedParameterJdbcOperations.query("" +
                             "SELECT bg.book_id, b.title, " +
@@ -95,24 +95,22 @@ public class JdbcBookRepository implements BookRepository {
     private void mergeBooksInfo(List<Book> booksWithoutGenres, List<Genre> genres,
                                 List<BookGenreRelation> relations) {
         var mapGenres = convertListGenresToMap(genres);
-        for (int i = 0, j = 0; i < booksWithoutGenres.size() && j < relations.size(); ) {
-            var book = booksWithoutGenres.get(i);
-            var bookGenreRelation = relations.get(j);
-            if (book.getId() < bookGenreRelation.bookId) {
-                i++;
-            } else if (book.getId() == bookGenreRelation.bookId) {
-                Genre genre = mapGenres.get(bookGenreRelation.genreId());
-                book.getGenres().add(genre);
-                j++;
-            } else {
-                j++;
-            }
-        }
+        var mapBooksWithoutGenres = convertListBookWithoutGenresToMap(booksWithoutGenres);
+        relations.forEach(relation -> {
+            Book book = mapBooksWithoutGenres.get(relation.bookId());
+            Genre genre = mapGenres.get(relation.genreId());
+            book.getGenres().add(genre);
+        });
     }
 
     private Map<Long, Genre> convertListGenresToMap(List<Genre> genres) {
         return genres.stream()
                 .collect(Collectors.toMap(Genre::getId, Function.identity()));
+    }
+
+    private Map<Long, Book> convertListBookWithoutGenresToMap(List<Book> booksWithoutGenres) {
+        return booksWithoutGenres.stream()
+                .collect(Collectors.toMap(Book::getId, Function.identity()));
     }
 
     private Book insert(Book book) {
