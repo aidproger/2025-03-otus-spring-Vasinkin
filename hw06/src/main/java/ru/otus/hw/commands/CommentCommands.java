@@ -22,4 +22,24 @@ public class CommentCommands {
                 .map(commentConverter::commentToString)
                 .collect(Collectors.joining("," + System.lineSeparator()));
     }
+
+    // cins newComment 1
+    @ShellMethod(value = "Insert comment", key = "cins")
+    public String insertComment(String text, long bookId) {
+        var savedComment = commentService.insert(text, bookId);
+        return commentConverter.commentToString(savedComment);
+    }
+
+    // cupd 4 editedComment 1
+    @ShellMethod(value = "Update comment", key = "cupd")
+    public String updateComment(long id, String text, long bookId) {
+        var savedComment = commentService.update(id, text, bookId);
+        return commentConverter.commentToString(savedComment);
+    }
+
+    // cdel 1
+    @ShellMethod(value = "Delete comment by id", key = "cdel")
+    public void deleteComment(long id) {
+        commentService.deleteById(id);
+    }
 }

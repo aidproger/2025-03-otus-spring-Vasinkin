@@ -28,6 +28,8 @@ public class JpaBookRepositoryTest {
     @Autowired
     private TestEntityManager em;
 
+    private static final long FIRST_BOOK_ID = 1L;
+
     private static final long SECOND_BOOK_ID = 2L;
 
     private static final int EXPECTED_NUMBER_OF_AUTHORS = 3;
@@ -102,13 +104,11 @@ public class JpaBookRepositoryTest {
     @DisplayName("должен удалять книгу по id ")
     @Test
     void shouldDeleteBook() {
-        var book = Optional.ofNullable(em.find(Book.class, 1L));
+        var book = Optional.ofNullable(em.find(Book.class, FIRST_BOOK_ID));
         assertThat(book).isPresent();
-        repositoryJpa.deleteById(1L);
+        repositoryJpa.delete(book.get());
 
-        em.clear();
-
-        book = Optional.ofNullable(em.find(Book.class, 1L));
+        book = Optional.ofNullable(em.find(Book.class, FIRST_BOOK_ID));
         assertThat(book).isEmpty();
     }
 

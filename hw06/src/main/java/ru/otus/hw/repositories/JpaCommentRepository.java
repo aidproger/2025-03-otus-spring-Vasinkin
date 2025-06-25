@@ -27,4 +27,18 @@ public class JpaCommentRepository implements CommentRepository {
     public Optional<Comment> findById(long id) {
         return Optional.ofNullable(em.find(Comment.class, id));
     }
+
+    @Override
+    public Comment save(Comment comment) {
+        if (comment.getId() == 0) {
+            em.persist(comment);
+            return comment;
+        }
+        return em.merge(comment);
+    }
+
+    @Override
+    public void delete(Comment comment) {
+        em.remove(comment);
+    }
 }
