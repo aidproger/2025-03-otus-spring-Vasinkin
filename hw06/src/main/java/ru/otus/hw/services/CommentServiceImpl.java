@@ -10,6 +10,7 @@ import ru.otus.hw.repositories.BookRepository;
 import ru.otus.hw.repositories.CommentRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -28,6 +29,12 @@ public class CommentServiceImpl implements CommentService {
         return comments.stream()
                 .map(c -> new CommentDto(c.getId(), c.getText()))
                 .toList();
+    }
+
+    @Override
+    public Optional<CommentDto> findById(long id) {
+        return commentRepository.findById(id).map(
+                comment -> new CommentDto(comment.getId(), comment.getText()));
     }
 
     @Transactional

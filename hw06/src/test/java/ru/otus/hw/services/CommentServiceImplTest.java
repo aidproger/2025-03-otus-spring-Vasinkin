@@ -51,6 +51,15 @@ public class CommentServiceImplTest {
         actualComments.forEach(System.out::println);
     }
 
+    @DisplayName("должен загружать комментарий по id в виде dto ")
+    @Test
+    void shouldReturnCorrectCommentById() {
+        var actualComments = commentService.findById(SECOND_COMMENT_ID);
+        var expectedComments = dtoComments.get((int) SECOND_COMMENT_ID - 1);
+
+        assertThat(actualComments).isPresent().get().isEqualTo(expectedComments);
+    }
+
     @DisplayName("должен сохранять новый комментарий и возвращать dto ")
     @Test
     void shouldSaveNewComment() {

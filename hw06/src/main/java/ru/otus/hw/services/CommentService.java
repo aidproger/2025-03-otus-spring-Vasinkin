@@ -3,9 +3,12 @@ package ru.otus.hw.services;
 import ru.otus.hw.domain.CommentDto;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface CommentService {
     List<CommentDto> findAllByBookId(Long id);
+
+    Optional<CommentDto> findById(long id);
 
     CommentDto insert(String text, long bookId);
 

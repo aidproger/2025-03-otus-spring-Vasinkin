@@ -22,7 +22,7 @@ public class JpaBookRepository implements BookRepository {
     @Override
     public Optional<Book> findById(long id) {
         var entityGraph = em.getEntityGraph("books-authors-genres-entity-graph");
-        Map<String, Object> properties = Map.of("javax.persistence.fetchgraph", entityGraph);
+        Map<String, Object> properties = Map.of(FETCH.getKey(), entityGraph);
         return Optional.ofNullable(em.find(Book.class, id, properties));
     }
 

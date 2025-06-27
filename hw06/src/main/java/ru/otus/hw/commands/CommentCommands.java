@@ -23,6 +23,13 @@ public class CommentCommands {
                 .collect(Collectors.joining("," + System.lineSeparator()));
     }
 
+    @ShellMethod(value = "Find comment by id", key = "bcid")
+    public String findCommentById(long id) {
+        return commentService.findById(id)
+                .map(commentConverter::commentToString)
+                .orElse("Comment with id %d not found".formatted(id));
+    }
+
     // cins newComment 1
     @ShellMethod(value = "Insert comment", key = "cins")
     public String insertComment(String text, long bookId) {
