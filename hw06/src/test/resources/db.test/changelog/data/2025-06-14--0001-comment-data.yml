@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025-06-14--0001-comment-data
+      author: aidproger
+      context: data
+      runOnChange: true
+      loadData:
+        file: data/2025-06-14--0001-comments.csv
+        relativeToChangelogFile: true
+        separator: ;
+        quotChar: '"'
+        encoding: UTF-8
+        tableName: comments

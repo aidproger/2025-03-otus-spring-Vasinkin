@@ -1,0 +1,25 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025-06-05--0001-author-data
+      author: aidproger
+      context: data
+      runOnChange: true
+      loadData:
+        file: data/2025-06-05--0001-authors.csv
+        relativeToChangelogFile: true
+        separator: ;
+        quotChar: '"'
+        encoding: UTF-8
+        tableName: authors
+  - changeSet:
+      id: 2025-06-05--0002-genre-data
+      author: aidproger
+      context: data
+      runOnChange: true
+      loadData:
+        file: data/2025-06-05--0002-genres.csv
+        relativeToChangelogFile: true
+        separator: ;
+        quotChar: '"'
+        encoding: UTF-8
+        tableName: genres
