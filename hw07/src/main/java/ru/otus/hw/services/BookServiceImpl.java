@@ -7,9 +7,9 @@ import ru.otus.hw.converters.BookConverter;
 import ru.otus.hw.domain.BookDto;
 import ru.otus.hw.exceptions.EntityNotFoundException;
 import ru.otus.hw.models.Book;
-import ru.otus.hw.repositories.DataJpaAuthorRepository;
-import ru.otus.hw.repositories.DataJpaGenreRepository;
-import ru.otus.hw.repositories.DataJpaBookRepository;
+import ru.otus.hw.repositories.AuthorRepository;
+import ru.otus.hw.repositories.GenreRepository;
+import ru.otus.hw.repositories.BookRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,11 +21,11 @@ import static org.springframework.util.CollectionUtils.isEmpty;
 @Service
 public class BookServiceImpl implements BookService {
 
-    private final DataJpaAuthorRepository authorRepository;
+    private final AuthorRepository authorRepository;
 
-    private final DataJpaGenreRepository genreRepository;
+    private final GenreRepository genreRepository;
 
-    private final DataJpaBookRepository bookRepository;
+    private final BookRepository bookRepository;
 
     private final BookConverter bookConverter;
 

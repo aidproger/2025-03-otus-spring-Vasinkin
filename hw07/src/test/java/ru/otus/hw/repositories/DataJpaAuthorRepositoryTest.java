@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.context.annotation.Import;
 import ru.otus.hw.common.TestDataGenerator;
 import ru.otus.hw.models.Author;
 
@@ -18,7 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DataJpaTest
 public class DataJpaAuthorRepositoryTest {
     @Autowired
-    private DataJpaAuthorRepository repositoryDataJpa;
+    private AuthorRepository authorRepository;
 
     @Autowired
     private TestEntityManager em;
@@ -37,7 +36,7 @@ public class DataJpaAuthorRepositoryTest {
     @DisplayName("должен загружать список всех авторов ")
     @Test
     void shouldReturnCorrectAuthorList() {
-        var actualAuthors = repositoryDataJpa.findAll();
+        var actualAuthors = authorRepository.findAll();
         var expectedAuthors = dbAuthors;
 
         assertThat(actualAuthors).containsExactlyElementsOf(expectedAuthors);
@@ -48,7 +47,7 @@ public class DataJpaAuthorRepositoryTest {
     @Test
     void shouldReturnCorrectAuthorById() {
         var expectedAuthor = em.find(Author.class, SECOND_AUTHOR_ID);
-        var actualAuthor = repositoryDataJpa.findById(expectedAuthor.getId());
+        var actualAuthor = authorRepository.findById(expectedAuthor.getId());
         assertThat(actualAuthor).isPresent()
                 .get().isEqualTo(expectedAuthor);
         System.out.println(actualAuthor);

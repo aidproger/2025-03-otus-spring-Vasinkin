@@ -7,7 +7,7 @@ import ru.otus.hw.models.Book;
 import java.util.List;
 import java.util.Optional;
 
-public interface DataJpaBookRepository extends JpaRepository<Book, Long> {
+public interface BookRepository extends JpaRepository<Book, Long> {
 
     @EntityGraph(attributePaths = "author")
     @Override
@@ -15,5 +15,5 @@ public interface DataJpaBookRepository extends JpaRepository<Book, Long> {
 
     @EntityGraph(attributePaths = {"author", "genres"})
     @Override
-    Optional<Book> findById(Long aLong);
+    Optional<Book> findById(Long id);
 }

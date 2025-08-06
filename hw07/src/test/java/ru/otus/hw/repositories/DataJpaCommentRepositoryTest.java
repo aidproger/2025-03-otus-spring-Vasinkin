@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class DataJpaCommentRepositoryTest {
 
     @Autowired
-    private DataJpaCommentRepository repositoryDataJpa;
+    private CommentRepository commentRepository;
 
     @Autowired
     private TestEntityManager em;
@@ -48,7 +48,7 @@ public class DataJpaCommentRepositoryTest {
     @Test
     void shouldReturnCorrectCommentById() {
         var expectedComment = em.find(Comment.class, SECOND_COMMENT_ID);
-        var actualComment = repositoryDataJpa.findById(expectedComment.getId());
+        var actualComment = commentRepository.findById(expectedComment.getId());
         assertThat(actualComment).isPresent()
                 .get().isEqualTo(expectedComment);
         System.out.println(actualComment);
@@ -57,7 +57,7 @@ public class DataJpaCommentRepositoryTest {
     @DisplayName("должен загружать список комментариев по id книги ")
     @Test
     void shouldReturnCorrectCommentListByBookId() {
-        var actualComments = repositoryDataJpa.findAllByBookId(FIRST_BOOK_ID);
+        var actualComments = commentRepository.findAllByBookId(FIRST_BOOK_ID);
         var expectedComments = dbComments;
 
         assertThat(actualComments).containsExactlyElementsOf(expectedComments);
@@ -68,7 +68,7 @@ public class DataJpaCommentRepositoryTest {
     @Test
     void shouldSaveNewComment() {
         var expectedComment = new Comment(0, "CommentText_10500", dbBooks.get(0));
-        var returnedComment = repositoryDataJpa.save(expectedComment);
+        var returnedComment = commentRepository.save(expectedComment);
         assertThat(returnedComment).isNotNull()
                 .usingRecursiveComparison().ignoringExpectedNullFields().isEqualTo(expectedComment);
     }
@@ -81,7 +81,7 @@ public class DataJpaCommentRepositoryTest {
         assertThat(em.find(Comment.class, SECOND_COMMENT_ID))
                 .isNotEqualTo(expectedComment);
 
-        var returnedComment = repositoryDataJpa.save(expectedComment);
+        var returnedComment = commentRepository.save(expectedComment);
         assertThat(returnedComment).isNotNull()
                 .matches(comment -> comment.getId() > 0)
                 .usingRecursiveComparison().ignoringExpectedNullFields().isEqualTo(expectedComment);
@@ -95,7 +95,7 @@ public class DataJpaCommentRepositoryTest {
     void shouldDeleteComment() {
         var comment = Optional.ofNullable(em.find(Comment.class, SECOND_COMMENT_ID));
         assertThat(comment).isPresent();
-        repositoryDataJpa.delete(comment.get());
+        commentRepository.delete(comment.get());
 
         comment = Optional.ofNullable(em.find(Comment.class, SECOND_COMMENT_ID));
         assertThat(comment).isEmpty();

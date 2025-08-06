@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.hw.domain.GenreDto;
-import ru.otus.hw.repositories.DataJpaGenreRepository;
+import ru.otus.hw.repositories.GenreRepository;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ import java.util.List;
 @Service
 public class GenreServiceImpl implements GenreService {
 
-    private final DataJpaGenreRepository genreRepository;
+    private final GenreRepository genreRepository;
 
     @Transactional(readOnly = true)
     @Override

@@ -22,7 +22,7 @@ public class DataJpaBookRepositoryTest {
 
 
     @Autowired
-    private DataJpaBookRepository repositoryDataJpa;
+    private BookRepository bookRepository;
 
     @Autowired
     private TestEntityManager em;
@@ -54,7 +54,7 @@ public class DataJpaBookRepositoryTest {
     @Test
     void shouldReturnCorrectBookById() {
         var expectedBook = em.find(Book.class, SECOND_BOOK_ID);
-        var actualBook = repositoryDataJpa.findById(SECOND_BOOK_ID);
+        var actualBook = bookRepository.findById(SECOND_BOOK_ID);
 
         assertThat(actualBook).isPresent()
                 .get()
@@ -65,7 +65,7 @@ public class DataJpaBookRepositoryTest {
     @Test
     void shouldReturnCorrectBooksList() {
         var expectedBooks = dbBooks;
-        var actualBooks = repositoryDataJpa.findAll();
+        var actualBooks = bookRepository.findAll();
 
         assertThat(actualBooks).containsExactlyElementsOf(expectedBooks);
         actualBooks.forEach(System.out::println);
@@ -77,7 +77,7 @@ public class DataJpaBookRepositoryTest {
     void shouldSaveNewBook() {
         var expectedBook = new Book(0, "BookTitle_10500", dbAuthors.get(0),
                 List.of(dbGenres.get(0), dbGenres.get(2)));
-        var returnedBook = repositoryDataJpa.save(expectedBook);
+        var returnedBook = bookRepository.save(expectedBook);
         assertThat(returnedBook).isNotNull()
                 .usingRecursiveComparison().ignoringExpectedNullFields().isEqualTo(expectedBook);
     }
@@ -91,7 +91,7 @@ public class DataJpaBookRepositoryTest {
         assertThat(em.find(Book.class, SECOND_BOOK_ID))
                 .isNotEqualTo(expectedBook);
 
-        var returnedBook = repositoryDataJpa.save(expectedBook);
+        var returnedBook = bookRepository.save(expectedBook);
         assertThat(returnedBook).isNotNull()
                 .matches(book -> book.getId() > 0)
                 .usingRecursiveComparison().ignoringExpectedNullFields().isEqualTo(expectedBook);
@@ -105,7 +105,7 @@ public class DataJpaBookRepositoryTest {
     void shouldDeleteBook() {
         var book = Optional.ofNullable(em.find(Book.class, FIRST_BOOK_ID));
         assertThat(book).isPresent();
-        repositoryDataJpa.delete(book.get());
+        bookRepository.delete(book.get());
 
         book = Optional.ofNullable(em.find(Book.class, FIRST_BOOK_ID));
         assertThat(book).isEmpty();

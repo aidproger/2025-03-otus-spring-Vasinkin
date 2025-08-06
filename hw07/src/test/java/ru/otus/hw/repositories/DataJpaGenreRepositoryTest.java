@@ -20,7 +20,7 @@ public class DataJpaGenreRepositoryTest {
 
 
     @Autowired
-    private DataJpaGenreRepository repositoryDataJpa;
+    private GenreRepository genreRepository;
 
     @Autowired
     private TestEntityManager em;
@@ -37,7 +37,7 @@ public class DataJpaGenreRepositoryTest {
     @DisplayName("должен загружать список всех жанров ")
     @Test
     void shouldReturnCorrectGenreList() {
-        var actualGenres = repositoryDataJpa.findAll();
+        var actualGenres = genreRepository.findAll();
         var expectedGenres = dbGenres;
 
         assertThat(actualGenres).containsExactlyElementsOf(expectedGenres);
@@ -49,7 +49,7 @@ public class DataJpaGenreRepositoryTest {
     void shouldReturnCorrectGenreListByIds() {
         var expectedGenres = dbGenres;
         var expectedIds = expectedGenres.stream().map(Genre::getId).collect(Collectors.toSet());
-        var actualGenres = repositoryDataJpa.findAllById(expectedIds);
+        var actualGenres = genreRepository.findAllById(expectedIds);
         assertThat(actualGenres).containsExactlyElementsOf(expectedGenres);
         actualGenres.forEach(System.out::println);
     }
