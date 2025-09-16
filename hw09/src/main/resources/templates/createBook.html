@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:if="${book.id > 0}" th:text="|#{edit-book-title-page} '${book.title}'|">Edit book</title>
+    <title th:if="${book.id == 0}" th:text="#{create-book-title-page}">Create book</title>
+    <link rel="stylesheet" href="/css/style.css?v=5">
+</head>
+<body>
+
+    <div class="block">
+        <div><a href="#" th:href="@{/}" th:text="#{start-page-reference}">Start page</a></div>
+    </div>
+
+    <div class="position-div">
+        <form action="/editbook" method="post" th:object="${book}">
+            <div class="container">
+                <div class="block">
+                    <div class="block-select"><b th:text="|#{books-table-header-title}: |"></b></div>
+                    <div class="block-select2"><b th:text="|#{books-table-header-author}: |"></b></div>
+                    <div class="block-select2"><b th:text="|#{books-table-header-genre}: |"></b></div>
+                </div>
+                <div class="block position-div">
+                    <div class="block-input">
+                        <input type="hidden" th:field="*{id}"/>
+                        <input type="text" th:field="*{title}" required maxlength="255"/>
+                    </div>
+                    <div class="block">
+                        <select name="sel-authors" th:field="*{author.id}" size="3" required>
+                            <option th:each="author : ${allAuthors}"
+                                    th:value="${author.id}"
+                                    th:text="${author.fullName}">Author name
+                            </option>
+                        </select>
+                        <input type="hidden" th:field="*{author.fullName}"/>
+                    </div>
+                    <div class="block">
+                        <select name="sel-genres" th:field="*{genres}" multiple="multiple" size="3" required>
+                            <option th:each="genre : ${allGenres}" th:value="${genre.id}" th:text="${genre.name}">Author
+                                name
+                            </option>
+                        </select>
+                    </div>
+                    <button class="button-pointer button-add-align position-button" type="submit"
+                            th:text="#{save-button-caption}">Add
+                    </button>
+                    <a href="javascript:history.back()">
+                        <button class="button-pointer button-add-align" type="button" th:text="#{cancel-button-caption}">
+                            Cancel
+                        </button>
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
