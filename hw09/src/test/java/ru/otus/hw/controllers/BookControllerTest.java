@@ -100,13 +100,12 @@ public class BookControllerTest {
     @DisplayName("должен отдавать страницу создания книги с правильными представлением и моделью данных ")
     @Test
     void shouldRenderCreateBookPageWithCorrectViewAndModelAttributes() throws Exception {
-        var bookId = 0L;
-        var expectedBook = new BookDto(bookId, "", new AuthorDto(0, ""), List.of());
+        var expectedBook = new BookDto(0, "", new AuthorDto(0, ""), List.of());
         var expectedAuthors = dtoAuthors;
         var expectedGenres = dtoGenres;
         when(authorService.findAll()).thenReturn(expectedAuthors);
         when(genreService.findAll()).thenReturn(expectedGenres);
-        mvc.perform(get("/createbook").param("id", String.valueOf(bookId)))
+        mvc.perform(get("/createbook"))
                 .andExpect(view().name("createBook"))
                 .andExpect(model().attribute("book", expectedBook))
                 .andExpect(model().attribute("allAuthors", expectedAuthors))
@@ -122,7 +121,7 @@ public class BookControllerTest {
         when(bookService.findById(FIRST_BOOK_ID)).thenReturn(Optional.of(expectedBook));
         when(authorService.findAll()).thenReturn(expectedAuthors);
         when(genreService.findAll()).thenReturn(expectedGenres);
-        mvc.perform(get("/createbook").param("id", String.valueOf(FIRST_BOOK_ID)))
+        mvc.perform(get("/editbook/"+FIRST_BOOK_ID))
                 .andExpect(view().name("createBook"))
                 .andExpect(model().attribute("book", expectedBook))
                 .andExpect(model().attribute("allAuthors", expectedAuthors))
@@ -134,7 +133,7 @@ public class BookControllerTest {
     void shouldSaveNewBookAndRedirectToContextPath() throws Exception {
         var expectedNewBook = new BookDto(0, "newBook", dtoAuthors.get(0), dtoGenres.subList(0, 2));
         var expectedGenresIds = expectedNewBook.genres().stream().map(GenreDto::id).collect(Collectors.toSet());
-        var postMock = post("/editbook")
+        var postMock = post("/savebook")
                 .param("id", String.valueOf(expectedNewBook.id()))
                 .param("title", expectedNewBook.title())
                 .param("author.id", String.valueOf(expectedNewBook.author().id()));
@@ -143,7 +142,7 @@ public class BookControllerTest {
 
         mvc.perform(postMock).andExpect(view().name("redirect:/"));
         verify(bookService, times(1))
-                .insert(expectedNewBook.title(), expectedNewBook.author().id(), expectedGenresIds);
+                .save(expectedNewBook.id(), expectedNewBook.title(), expectedNewBook.author().id(), expectedGenresIds);
     }
 
     @DisplayName("должен сохранять изменения в текущей книге и перенаправлять на верный url ")
@@ -152,7 +151,7 @@ public class BookControllerTest {
         var expectedCurrentBook = dtoBooks.get((int) FIRST_BOOK_ID - 1);
         var expectedGenresIds = expectedCurrentBook.genres().stream().map(GenreDto::id).collect(Collectors.toSet());
 
-        var postMock = post("/editbook")
+        var postMock = post("/savebook")
                 .param("id", String.valueOf(expectedCurrentBook.id()))
                 .param("title", expectedCurrentBook.title())
                 .param("author.id", String.valueOf(expectedCurrentBook.author().id()));
@@ -161,7 +160,7 @@ public class BookControllerTest {
 
         mvc.perform(postMock).andExpect(view().name("redirect:/"));
         verify(bookService, times(1))
-                .update(expectedCurrentBook.id(), expectedCurrentBook.title(), expectedCurrentBook.author().id(), expectedGenresIds);
+                .save(expectedCurrentBook.id(), expectedCurrentBook.title(), expectedCurrentBook.author().id(), expectedGenresIds);
     }
 
     @DisplayName("должен удалять книгу и перенаправлять на верный url ")

@@ -7,9 +7,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import ru.otus.hw.domain.AuthorDto;
 import ru.otus.hw.domain.BookDto;
 import ru.otus.hw.domain.GenreDto;
@@ -56,36 +55,28 @@ public class BookController {
     }
 
     @GetMapping("/createbook")
-    public String viewCreatingBook(@RequestParam("id") long id, Model model) {
-        BookDto book;
-        if (id == 0) {
-            book = new BookDto(id, "", new AuthorDto(0, ""), List.of());
-        } else {
-            book = bookService.findById(id)
-                    .orElseThrow(BookNotFoundException::new);
-        }
-
-        var authors = authorService.findAll();
-        var genres = genreService.findAll();
-        model.addAttribute("book", book);
-        model.addAttribute("allAuthors", authors);
-        model.addAttribute("allGenres", genres);
+    public String viewCreatingBook(Model model) {
+        var book = new BookDto(0, "", new AuthorDto(0, ""), List.of());
+        createBookModel(book, model);
         return "createBook";
     }
 
-    @PostMapping("/editbook")
+    @GetMapping("/editbook/{id}")
+    public String viewEditBook(@PathVariable("id") long id, Model model) {
+        var book = bookService.findById(id)
+                .orElseThrow(BookNotFoundException::new);
+        createBookModel(book, model);
+        return "createBook";
+    }
+
+    @PostMapping("/savebook")
     public String saveBook(@Valid @ModelAttribute("book") BookDto book,
                            BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "createBook";
         }
         var genresIds = book.genres().stream().map(GenreDto::id).collect(Collectors.toSet());
-        if (book.id() == 0) {
-            bookService.insert(book.title(), book.author().id(), genresIds);
-        } else {
-            bookService.update(book.id(), book.title(), book.author().id(), genresIds);
-        }
-
+        bookService.save(book.id(), book.title(), book.author().id(), genresIds);
         return "redirect:/";
     }
 
@@ -97,5 +88,13 @@ public class BookController {
             throw new BookNotFoundException();
         }
         return "redirect:/";
+    }
+
+    private void createBookModel(BookDto book, Model model) {
+        var authors = authorService.findAll();
+        var genres = genreService.findAll();
+        model.addAttribute("book", book);
+        model.addAttribute("allAuthors", authors);
+        model.addAttribute("allGenres", genres);
     }
 }

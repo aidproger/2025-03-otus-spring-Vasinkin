@@ -9,9 +9,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.hw.common.TestDataGenerator;
-import ru.otus.hw.converters.AuthorConverter;
 import ru.otus.hw.converters.BookConverter;
-import ru.otus.hw.converters.GenreConverter;
 import ru.otus.hw.domain.AuthorDto;
 import ru.otus.hw.domain.BookDto;
 import ru.otus.hw.domain.GenreDto;
@@ -24,8 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("Сервис взаимодействия с книгами в виде dto ")
 @DataJpaTest
 @Transactional(propagation = Propagation.NOT_SUPPORTED)
-@Import({BookServiceImpl.class, BookConverter.class,
-        AuthorConverter.class, GenreConverter.class})
+@Import({BookServiceImpl.class, BookConverter.class})
 public class BookServiceImplTest {
 
     @Autowired
@@ -75,7 +72,7 @@ public class BookServiceImplTest {
     @DisplayName("должен сохранять новую книгу и возвращать dto ")
     @Test
     void shouldSaveNewBook() {
-        var returnedBook = bookService.insert("BookTitle_10500", dtoAuthors.get(0).id(),
+        var returnedBook = bookService.save(0, "BookTitle_10500", dtoAuthors.get(0).id(),
                 Set.of(dtoGenres.get(0).id(), dtoGenres.get(2).id()));
 
         assertThat(returnedBook).isNotNull();
@@ -94,14 +91,14 @@ public class BookServiceImplTest {
     void shouldSaveUpdatedBook() {
         var expectedBook = new BookDto(SECOND_BOOK_ID, "BookTitle_10500", dtoAuthors.get(2),
                 List.of(dtoGenres.get(4), dtoGenres.get(5)));
-        var returnedBook = bookService.update(SECOND_BOOK_ID, "BookTitle_10500", dtoAuthors.get(2).id(),
+        var returnedBook = bookService.save(SECOND_BOOK_ID, "BookTitle_10500", dtoAuthors.get(2).id(),
                 Set.of(dtoGenres.get(4).id(), dtoGenres.get(5).id()));
 
         assertThat(returnedBook).isNotNull()
                 .matches(book -> book.id() > 0)
                 .usingRecursiveComparison().ignoringExpectedNullFields().isEqualTo(expectedBook);
 
-        bookService.update(SECOND_BOOK_ID, "BookTitle_2", dtoAuthors.get(1).id(),
+        bookService.save(SECOND_BOOK_ID, "BookTitle_2", dtoAuthors.get(1).id(),
                 Set.of(dtoGenres.get(2).id(), dtoGenres.get(3).id()));
     }
 

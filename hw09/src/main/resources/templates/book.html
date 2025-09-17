@@ -23,7 +23,7 @@
             </div>
         </div>
         <div class="position-div">
-            <a class="button-pointer" th:href="@{/createbook(id=${book.id})}">
+            <a class="button-pointer" th:href="@{/editbook/{id}(id=${book.id})}">
                 <img th:src="@{/img/editicon64.png}" th:alt="#{book-edit-title}" />
             </a>
         </div>

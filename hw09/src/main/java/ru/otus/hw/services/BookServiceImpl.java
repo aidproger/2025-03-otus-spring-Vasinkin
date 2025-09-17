@@ -8,8 +8,8 @@ import ru.otus.hw.domain.BookDto;
 import ru.otus.hw.exceptions.EntityNotFoundException;
 import ru.otus.hw.models.Book;
 import ru.otus.hw.repositories.AuthorRepository;
-import ru.otus.hw.repositories.GenreRepository;
 import ru.otus.hw.repositories.BookRepository;
+import ru.otus.hw.repositories.GenreRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -44,20 +44,6 @@ public class BookServiceImpl implements BookService {
 
     @Transactional
     @Override
-    public BookDto insert(String title, long authorId, Set<Long> genresIds) {
-        var book = save(0, title, authorId, genresIds);
-        return bookConverter.convertEntityToDto(book);
-    }
-
-    @Transactional
-    @Override
-    public BookDto update(long id, String title, long authorId, Set<Long> genresIds) {
-        var book = save(id, title, authorId, genresIds);
-        return bookConverter.convertEntityToDto(book);
-    }
-
-    @Transactional
-    @Override
     public void deleteById(long id) {
         var book = bookRepository.findById(id);
         if (book.isEmpty()) {
@@ -66,7 +52,9 @@ public class BookServiceImpl implements BookService {
         bookRepository.delete(book.get());
     }
 
-    private Book save(long id, String title, long authorId, Set<Long> genresIds) {
+    @Transactional
+    @Override
+    public BookDto save(long id, String title, long authorId, Set<Long> genresIds) {
         if (isEmpty(genresIds)) {
             throw new IllegalArgumentException("Genres ids must not be null");
         }
@@ -79,7 +67,8 @@ public class BookServiceImpl implements BookService {
         }
 
         var book = new Book(id, title, author, genres);
-        return bookRepository.save(book);
+        book = bookRepository.save(book);
+        return bookConverter.convertEntityToDto(book);
     }
 
 }

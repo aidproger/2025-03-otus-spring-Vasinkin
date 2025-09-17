@@ -1,7 +1,6 @@
 package ru.otus.hw.common;
 
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.stereotype.Component;
 import ru.otus.hw.domain.AuthorDto;
 import ru.otus.hw.domain.BookDto;
 import ru.otus.hw.domain.CommentDto;
