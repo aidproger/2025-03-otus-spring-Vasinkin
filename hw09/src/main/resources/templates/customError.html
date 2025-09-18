@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title th:text="#{error-text-header}">Title</title>
+</head>
+<body>
+    <div class="block">
+        <div><a href="#" th:href="@{/}" th:text="#{start-page-reference}">Start page</a></div>
+    </div>
+
+    <h3 th:text="#{error-text-header}">Error text</h3>
+    <span th:text="${errorText}">Error text</span>
+</body>
+</html>
