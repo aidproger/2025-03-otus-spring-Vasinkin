@@ -12,7 +12,7 @@ import ru.otus.hw.domain.AuthorDto;
 import ru.otus.hw.domain.BookDto;
 import ru.otus.hw.domain.CommentDto;
 import ru.otus.hw.domain.GenreDto;
-import ru.otus.hw.exceptions.EntityNotFoundException;
+import ru.otus.hw.exceptions.CommentNotFoundException;
 import ru.otus.hw.services.BookServiceImpl;
 import ru.otus.hw.services.CommentServiceImpl;
 
@@ -91,7 +91,7 @@ public class CommentControllerTest {
     @DisplayName("должен отдавать страницу ошибки ")
     @Test
     void shouldRenderErrorPageWhenCommentNotFound() throws Exception {
-        doThrow(new EntityNotFoundException("Comment with id %d not found".formatted(SECOND_COMMENT_ID)))
+        doThrow(new CommentNotFoundException("Comment with id %d not found".formatted(SECOND_COMMENT_ID)))
                 .when(commentService).deleteById(SECOND_COMMENT_ID);
         mvc.perform(post("/deletecomment/{id}", SECOND_COMMENT_ID)
                         .param("bookid", String.valueOf(FIRST_BOOK_ID)))

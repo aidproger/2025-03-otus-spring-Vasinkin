@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.hw.domain.CommentDto;
+import ru.otus.hw.exceptions.CommentNotFoundException;
 import ru.otus.hw.exceptions.EntityNotFoundException;
 import ru.otus.hw.models.Comment;
 import ru.otus.hw.repositories.BookRepository;
@@ -57,7 +58,7 @@ public class CommentServiceImpl implements CommentService {
     public void deleteById(long id) {
         var comment = commentRepository.findById(id);
         if (comment.isEmpty()) {
-            throw new EntityNotFoundException("Comment with id %d not found".formatted(id));
+            throw new CommentNotFoundException("Comment with id %d not found".formatted(id));
         }
         commentRepository.delete(comment.get());
     }

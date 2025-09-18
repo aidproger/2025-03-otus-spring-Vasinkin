@@ -7,12 +7,11 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.PathVariable;
 import ru.otus.hw.domain.CommentDto;
 import ru.otus.hw.exceptions.BookNotFoundException;
-import ru.otus.hw.exceptions.CommentNotFoundException;
 import ru.otus.hw.services.BookService;
 import ru.otus.hw.services.CommentService;
 
@@ -48,12 +47,7 @@ public class CommentController {
 
     @PostMapping("/deletecomment/{id}")
     public String deleteBookById(@PathVariable("id") long id, @RequestParam("bookid") long bookid) {
-        try {
-            commentService.deleteById(id);
-        } catch (Exception e) {
-            throw new CommentNotFoundException();
-        }
-
+        commentService.deleteById(id);
         return "redirect:/book/" + bookid;
     }
 }

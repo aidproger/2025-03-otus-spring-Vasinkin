@@ -12,7 +12,7 @@ import ru.otus.hw.domain.AuthorDto;
 import ru.otus.hw.domain.BookDto;
 import ru.otus.hw.domain.CommentDto;
 import ru.otus.hw.domain.GenreDto;
-import ru.otus.hw.exceptions.EntityNotFoundException;
+import ru.otus.hw.exceptions.BookNotFoundException;
 import ru.otus.hw.services.AuthorServiceImpl;
 import ru.otus.hw.services.BookServiceImpl;
 import ru.otus.hw.services.CommentServiceImpl;
@@ -121,7 +121,7 @@ public class BookControllerTest {
         when(bookService.findById(FIRST_BOOK_ID)).thenReturn(Optional.of(expectedBook));
         when(authorService.findAll()).thenReturn(expectedAuthors);
         when(genreService.findAll()).thenReturn(expectedGenres);
-        mvc.perform(get("/editbook/"+FIRST_BOOK_ID))
+        mvc.perform(get("/editbook/" + FIRST_BOOK_ID))
                 .andExpect(view().name("createBook"))
                 .andExpect(model().attribute("book", expectedBook))
                 .andExpect(model().attribute("allAuthors", expectedAuthors))
@@ -174,7 +174,7 @@ public class BookControllerTest {
     @DisplayName("должен отдавать страницу ошибки ")
     @Test
     void shouldRenderErrorPageWhenBookNotFound() throws Exception {
-        doThrow(new EntityNotFoundException("Book with id %d not found".formatted(FIRST_BOOK_ID)))
+        doThrow(new BookNotFoundException("Book with id %d not found".formatted(FIRST_BOOK_ID)))
                 .when(bookService).deleteById(FIRST_BOOK_ID);
         mvc.perform(post("/deletebook/{id}", FIRST_BOOK_ID))
                 .andExpect(view().name("customError"));

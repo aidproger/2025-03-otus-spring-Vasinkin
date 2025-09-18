@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.hw.converters.BookConverter;
 import ru.otus.hw.domain.BookDto;
+import ru.otus.hw.exceptions.BookNotFoundException;
 import ru.otus.hw.exceptions.EntityNotFoundException;
 import ru.otus.hw.models.Book;
 import ru.otus.hw.repositories.AuthorRepository;
@@ -47,7 +48,7 @@ public class BookServiceImpl implements BookService {
     public void deleteById(long id) {
         var book = bookRepository.findById(id);
         if (book.isEmpty()) {
-            throw new EntityNotFoundException("Book with id %d not found".formatted(id));
+            throw new BookNotFoundException("Book with id %d not found".formatted(id));
         }
         bookRepository.delete(book.get());
     }

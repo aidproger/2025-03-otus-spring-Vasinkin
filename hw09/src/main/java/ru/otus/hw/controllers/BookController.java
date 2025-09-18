@@ -82,11 +82,7 @@ public class BookController {
 
     @PostMapping("/deletebook/{id}")
     public String deleteBookById(@PathVariable("id") long id) {
-        try {
-            bookService.deleteById(id);
-        } catch (Exception e) {
-            throw new BookNotFoundException();
-        }
+        bookService.deleteById(id);
         return "redirect:/";
     }
 
