@@ -1,0 +1,27 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025-06-14--0001-comment
+      author: aidproger
+      changes:
+        - createTable:
+            tableName: comments
+            columns:
+              - column:
+                  name: id
+                  type: bigserial
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_commentss
+              - column:
+                  name: text
+                  type: varchar(1024)
+              - column:
+                  name: book_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_comment_comments_book
+                    references: books(id)
+                    deleteCascade: true

@@ -1,0 +1,37 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025-06-05--0001-author
+      author: aidproger
+      changes:
+        - createTable:
+            tableName: authors
+            columns:
+              - column:
+                  name: id
+                  type: bigserial
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_authors
+              - column:
+                  name: full_name
+                  type: varchar(255)
+  - changeSet:
+      id: 2025-06-05--0001-genre
+      author: aidproger
+      changes:
+        - createTable:
+            tableName: genres
+            columns:
+              - column:
+                  name: id
+                  type: bigserial
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_genres
+              - column:
+                  name: name
+                  type: varchar(255)
