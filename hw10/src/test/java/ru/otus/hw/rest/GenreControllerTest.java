@@ -8,15 +8,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.otus.hw.common.TestDataGenerator;
 import ru.otus.hw.domain.GenreDto;
+import ru.otus.hw.rest.exceptions.GenreNotFoundException;
 import ru.otus.hw.services.GenreServiceImpl;
 
 import java.util.List;
 import java.util.Locale;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -32,7 +35,7 @@ public class GenreControllerTest {
     @Autowired
     private ObjectMapper mapper;
 
-    @Autowired
+    @MockBean
     private MessageSource messageSource;
 
     @MockBean
@@ -57,13 +60,11 @@ public class GenreControllerTest {
     @DisplayName("должен возвращать заданную ошибку, если жанры не найдены ")
     @Test
     void shouldReturnExpectedErrorWhenGenresNotFound() throws Exception {
-        LocaleContextHolder.setLocale(Locale.ENGLISH);
-        var expectedErrorText = messageSource.getMessage("genre-not-found-error", null,
-                LocaleContextHolder.getLocale());
+        String expectedErrorText = "Genre not found";
 
-        given(genreService.findAll()).willReturn(List.of());
-        mvc.perform(get("/api/v1/genres")
-                        .locale(Locale.ENGLISH))
+        given(messageSource.getMessage(anyString(), isNull(), any(Locale.class))).willReturn(expectedErrorText);
+        given(genreService.findAll()).willThrow(new GenreNotFoundException("Error"));
+        mvc.perform(get("/api/v1/genres"))
                 .andExpect(status().isNotFound())
                 .andExpect(content().string(expectedErrorText));
     }

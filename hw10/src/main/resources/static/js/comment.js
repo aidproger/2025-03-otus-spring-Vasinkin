@@ -8,8 +8,7 @@ function saveComment() {
     const comment = { id: 0,
                     text: commentText.value};
 
-    const params = new URLSearchParams({bookId}).toString();
-    fetch(`/api/v1/comment?${params}`, {
+    fetch(`/api/v1/books/${bookId}/comments`, {
             method: 'POST',
             headers: {
               'Accept': 'application/json',
@@ -28,7 +27,7 @@ function saveComment() {
 function getBookById(){
     const bookId = document.getElementById('book-id').textContent;
     const createCommentTitlePage = document.getElementById('create-comment-title-page').textContent;
-    fetch(`/api/v1/book/${bookId}`)
+    fetch(`/api/v1/books/${bookId}`)
         .then(response => {
             if (response.ok) {
               return response.json();

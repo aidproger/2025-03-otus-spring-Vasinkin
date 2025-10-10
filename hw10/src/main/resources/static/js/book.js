@@ -6,9 +6,8 @@ window.addEventListener('load', () => {
 function getCommentsByBookId(){
     const bookId = document.getElementById('book-id').textContent;
     const deleteTitle = document.getElementById('delete-title').textContent;
-    const params = new URLSearchParams({bookId}).toString();
 
-    fetch(`/api/v1/comments?${params}`)
+    fetch(`/api/v1/books/${bookId}/comments`)
         .then(response => {
             if (response.ok) {
               return response.json();
@@ -22,7 +21,7 @@ function getCommentsByBookId(){
             commentsDiv.innerHTML = data.map(comment => `
                 <div class="container-view">
                     <span>${comment.text}</span>
-                    <a href="#" onclick="deleteComment(${comment.id}, '${comment.text}')">
+                    <a href="#" onclick="deleteComment(${comment.id}, '${comment.text}, ${bookId}}')">
                         <img src="/img/deleteicon16.png" alt="${deleteTitle}" />
                     </a>
                 </div>
@@ -30,11 +29,11 @@ function getCommentsByBookId(){
         });
 }
 
-function deleteComment(id, text){
+function deleteComment(id, text, bookId){
     const commentDeleteQuestion = document.getElementById('comment-delete-question').textContent + " '" + text + "'?";
     result=confirm(commentDeleteQuestion);
     if(result){
-        fetch(`/api/v1/comment/${id}`, {
+        fetch(`/api/v1/books/${bookId}/comments/${id}`, {
             method: "DELETE"
         })
         .then(response => {
@@ -50,7 +49,7 @@ function deleteComment(id, text){
 function getBookById(){
     const bookId = document.getElementById('book-id').textContent;
     const bookTitlePage = document.getElementById('book-title-page').textContent;
-    fetch(`/api/v1/book/${bookId}`)
+    fetch(`/api/v1/books/${bookId}`)
         .then(response => {
             if (response.ok) {
               return response.json();

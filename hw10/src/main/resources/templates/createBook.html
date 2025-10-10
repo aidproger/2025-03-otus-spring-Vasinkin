@@ -12,36 +12,34 @@
     </div>
 
     <div class="position-div">
-        <form action="/savebook" method="post" th:object="${book}">
-            <div class="container">
-                <div class="block">
-                    <div class="block-select"><b th:text="|#{books-table-header-title}: |"></b></div>
-                    <div class="block-select2"><b th:text="|#{books-table-header-author}: |"></b></div>
-                    <div class="block-select2"><b th:text="|#{books-table-header-genre}: |"></b></div>
-                </div>
-                <div class="block position-div">
-                    <div class="block-input">
-                        <input id="book-title" type="text"/>
-                    </div>
-                    <div class="block">
-                        <select id="select-authors">
-                        </select>
-                    </div>
-                    <div class="block">
-                        <select id="select-genres" multiple="multiple" size="3">
-                        </select>
-                    </div>
-                    <button class="button-pointer button-add-align position-button" type="button"
-                            onclick="saveBook()" th:text="#{save-button-caption}">Add
-                    </button>
-                    <a href="javascript:history.back()">
-                        <button class="button-pointer button-add-align" type="button" th:text="#{cancel-button-caption}">
-                            Cancel
-                        </button>
-                    </a>
-                </div>
+        <div class="container">
+            <div class="block">
+                <div class="block-select"><b th:text="|#{books-table-header-title}: |"></b></div>
+                <div class="block-select2"><b th:text="|#{books-table-header-author}: |"></b></div>
+                <div class="block-select2"><b th:text="|#{books-table-header-genre}: |"></b></div>
             </div>
-        </form>
+            <div class="block position-div">
+                <div class="block-input">
+                    <input id="book-title" type="text"/>
+                </div>
+                <div class="block">
+                    <select id="select-authors">
+                    </select>
+                </div>
+                <div class="block">
+                    <select id="select-genres" multiple="multiple" size="3">
+                    </select>
+                </div>
+                <button class="button-pointer button-add-align position-button" type="button"
+                        onclick="saveBook()" th:text="#{save-button-caption}">Add
+                </button>
+                <a href="javascript:history.back()">
+                    <button class="button-pointer button-add-align" type="button" th:text="#{cancel-button-caption}">
+                        Cancel
+                    </button>
+                </a>
+            </div>
+        </div>
     </div>
 
     <span id="id" th:text="${id}" hidden></span>
@@ -49,6 +47,6 @@
     <span id="edit-book-title-page" th:text="#{edit-book-title-page}" hidden></span>
     <span id="create-book-choose-author" th:text="#{create-book-choose-author}" hidden></span>
 
-    <script src="/js/createbook.js?v=2"></script>
+    <script src="/js/createbook.js?v=4"></script>
 </body>
 </html>

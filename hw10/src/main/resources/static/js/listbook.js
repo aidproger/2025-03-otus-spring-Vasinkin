@@ -36,7 +36,7 @@ function deleteBook(id, title){
     const bookDeleteQuestion = document.getElementById('book-delete-question').textContent + " '" + title + "'?";
     result=confirm(bookDeleteQuestion);
     if(result){
-        fetch(`/api/v1/book/${id}`, {
+        fetch(`/api/v1/books/${id}`, {
             method: "DELETE"
         })
         .then(response => {

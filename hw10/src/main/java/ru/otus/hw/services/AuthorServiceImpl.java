@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.hw.domain.AuthorDto;
 import ru.otus.hw.repositories.AuthorRepository;
+import ru.otus.hw.rest.exceptions.AuthorNotFoundException;
 
 import java.util.List;
 
@@ -17,8 +18,12 @@ public class AuthorServiceImpl implements AuthorService {
     @Transactional(readOnly = true)
     @Override
     public List<AuthorDto> findAll() {
-        return authorRepository.findAll().stream()
+        var authors = authorRepository.findAll().stream()
                 .map(a -> new AuthorDto(a.getId(), a.getFullName()))
                 .toList();
+        if (authors.isEmpty()) {
+            throw new AuthorNotFoundException();
+        }
+        return authors;
     }
 }

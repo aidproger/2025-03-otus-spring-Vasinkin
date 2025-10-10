@@ -8,11 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.otus.hw.common.TestDataGenerator;
 import ru.otus.hw.domain.BookDto;
 import ru.otus.hw.domain.GenreDto;
+import ru.otus.hw.rest.exceptions.BookNotFoundException;
 import ru.otus.hw.services.BookServiceImpl;
 
 import java.util.List;
@@ -20,16 +20,17 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -44,7 +45,7 @@ public class BookControllerTest {
     @Autowired
     private ObjectMapper mapper;
 
-    @Autowired
+    @MockBean
     private MessageSource messageSource;
 
     @MockBean
@@ -73,13 +74,11 @@ public class BookControllerTest {
     @DisplayName("должен возвращать заданную ошибку, если книги не найдены ")
     @Test
     void shouldReturnExpectedErrorWhenBooksNotFound() throws Exception {
-        LocaleContextHolder.setLocale(Locale.ENGLISH);
-        var expectedErrorText = messageSource.getMessage("book-not-found-error", null,
-                LocaleContextHolder.getLocale());
+        String expectedErrorText = "Comment not found";
 
-        given(bookService.findAll()).willReturn(List.of());
-        mvc.perform(get("/api/v1/books")
-                        .locale(Locale.ENGLISH))
+        given(messageSource.getMessage(anyString(), isNull(), any(Locale.class))).willReturn(expectedErrorText);
+        given(bookService.findAll()).willThrow(new BookNotFoundException("Error"));
+        mvc.perform(get("/api/v1/books"))
                 .andExpect(status().isNotFound())
                 .andExpect(content().string(expectedErrorText));
     }
@@ -91,7 +90,7 @@ public class BookControllerTest {
         var actualBook = Optional.of(expectedBook);
 
         given(bookService.findById(SECOND_BOOK_ID)).willReturn(actualBook);
-        mvc.perform(get("/api/v1/book/{id}", SECOND_BOOK_ID))
+        mvc.perform(get("/api/v1/books/{id}", SECOND_BOOK_ID))
                 .andExpect(status().isOk())
                 .andExpect(content().json(mapper.writeValueAsString(expectedBook)));
     }
@@ -99,7 +98,7 @@ public class BookControllerTest {
     @DisplayName("должен удалять книгу по идентификатору ")
     @Test
     void shouldCorrectlyDeleteBookById() throws Exception {
-        mvc.perform(delete("/api/v1/book/{id}", SECOND_BOOK_ID))
+        mvc.perform(delete("/api/v1/books/{id}", SECOND_BOOK_ID))
                 .andExpect(status().isNoContent());
         verify(bookService, times(1)).deleteById(SECOND_BOOK_ID);
     }
@@ -113,7 +112,7 @@ public class BookControllerTest {
                 .map(GenreDto::id).collect(Collectors.toSet());
 
         given(bookService.insert(anyString(), anyLong(), any())).willReturn(actualBook);
-        mvc.perform(post("/api/v1/savebook")
+        mvc.perform(post("/api/v1/books")
                         .contentType(APPLICATION_JSON)
                         .content(expectedBook))
                 .andExpect(status().isOk())
@@ -131,7 +130,7 @@ public class BookControllerTest {
                 .map(GenreDto::id).collect(Collectors.toSet());
 
         given(bookService.update(anyLong(), anyString(), anyLong(), any())).willReturn(actualBook);
-        mvc.perform(put("/api/v1/savebook")
+        mvc.perform(put("/api/v1/books")
                         .contentType(APPLICATION_JSON)
                         .content(expectedBook))
                 .andExpect(status().isOk())

@@ -4,11 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.hw.domain.CommentDto;
-import ru.otus.hw.rest.exceptions.CommentNotFoundException;
 import ru.otus.hw.exceptions.EntityNotFoundException;
 import ru.otus.hw.models.Comment;
 import ru.otus.hw.repositories.BookRepository;
 import ru.otus.hw.repositories.CommentRepository;
+import ru.otus.hw.rest.exceptions.CommentNotFoundException;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,7 +26,7 @@ public class CommentServiceImpl implements CommentService {
     public List<CommentDto> findAllByBookId(Long id) {
         var comments = commentRepository.findAllByBookId(id);
         if (comments.isEmpty()) {
-            return List.of();
+            throw new CommentNotFoundException();
         }
         return comments.stream()
                 .map(c -> new CommentDto(c.getId(), c.getText()))

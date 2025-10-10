@@ -8,24 +8,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.otus.hw.common.TestDataGenerator;
 import ru.otus.hw.domain.CommentDto;
+import ru.otus.hw.rest.exceptions.CommentNotFoundException;
 import ru.otus.hw.services.CommentServiceImpl;
 
 import java.util.List;
 import java.util.Locale;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -39,7 +41,7 @@ public class CommentControllerTest {
     @Autowired
     private ObjectMapper mapper;
 
-    @Autowired
+    @MockBean
     private MessageSource messageSource;
 
     @MockBean
@@ -62,8 +64,7 @@ public class CommentControllerTest {
     @Test
     void shouldReturnCorrectCommentsListByBookId() throws Exception {
         given(commentService.findAllByBookId(FIRST_BOOK_ID)).willReturn(dtoComments);
-        mvc.perform(get("/api/v1/comments")
-                        .param("bookId", String.valueOf(FIRST_BOOK_ID)))
+        mvc.perform(get("/api/v1/books/{bookId}/comments", FIRST_BOOK_ID))
                 .andExpect(status().isOk())
                 .andExpect(content().json(mapper.writeValueAsString(dtoComments)));
     }
@@ -71,14 +72,11 @@ public class CommentControllerTest {
     @DisplayName("должен возвращать заданную ошибку, если комментарии не найдены ")
     @Test
     void shouldReturnExpectedErrorWhenCommentsNotFound() throws Exception {
-        LocaleContextHolder.setLocale(Locale.ENGLISH);
-        String expectedErrorText = messageSource.getMessage("comment-not-found-error", null,
-                LocaleContextHolder.getLocale());
+        String expectedErrorText = "Comment not found";
 
-        given(commentService.findAllByBookId(anyLong())).willReturn(List.of());
-        mvc.perform(get("/api/v1/comments")
-                        .param("bookId", String.valueOf(FIRST_BOOK_ID))
-                        .locale(Locale.ENGLISH))
+        given(messageSource.getMessage(anyString(), isNull(), any(Locale.class))).willReturn(expectedErrorText);
+        given(commentService.findAllByBookId(anyLong())).willThrow(new CommentNotFoundException("Error"));
+        mvc.perform(get("/api/v1/books/{bookId}/comments", FIRST_BOOK_ID))
                 .andExpect(status().isNotFound())
                 .andExpect(content().string(expectedErrorText));
     }
@@ -86,7 +84,7 @@ public class CommentControllerTest {
     @DisplayName("должен удалять комментарий по идентификатору ")
     @Test
     void shouldCorrectlyDeleteCommentById() throws Exception {
-        mvc.perform(delete("/api/v1/comment/{id}", SECOND_COMMENT_ID))
+        mvc.perform(delete("/api/v1/books/{bookId}/comments/{id}", FIRST_BOOK_ID, SECOND_COMMENT_ID))
                 .andExpect(status().isNoContent());
         verify(commentService, times(1)).deleteById(SECOND_COMMENT_ID);
     }
@@ -98,10 +96,9 @@ public class CommentControllerTest {
         String expectedResult = mapper.writeValueAsString(actualComments);
 
         given(commentService.insert(anyString(), anyLong())).willReturn(actualComments);
-        mvc.perform(post("/api/v1/comment")
+        mvc.perform(post("/api/v1/books/{bookId}/comments", FIRST_BOOK_ID)
                         .contentType(APPLICATION_JSON)
-                        .content(expectedResult)
-                        .param("bookId", String.valueOf(FIRST_BOOK_ID)))
+                        .content(expectedResult))
                 .andExpect(status().isOk())
                 .andExpect(content().json(expectedResult));
         verify(commentService, times(1)).insert(actualComments.text(), FIRST_BOOK_ID);

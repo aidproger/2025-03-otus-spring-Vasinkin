@@ -51,7 +51,7 @@ function getBook(){
     if(id==0){
         document.title = `${createBookTitlePage}`;
     }else{
-        fetch(`/api/v1/book/${id}`)
+        fetch(`/api/v1/books/${id}`)
             .then(response => {
                 if (response.ok) {
                   return response.json();
@@ -100,7 +100,7 @@ function saveBook() {
         href = "/book/" + id;
     }
 
-    fetch(`/api/v1/savebook`, {
+    fetch(`/api/v1/books`, {
             method: method,
             headers: {
               'Accept': 'application/json',

@@ -8,8 +8,9 @@ import ru.otus.hw.domain.BookDto;
 import ru.otus.hw.exceptions.EntityNotFoundException;
 import ru.otus.hw.models.Book;
 import ru.otus.hw.repositories.AuthorRepository;
-import ru.otus.hw.repositories.GenreRepository;
 import ru.otus.hw.repositories.BookRepository;
+import ru.otus.hw.repositories.GenreRepository;
+import ru.otus.hw.rest.exceptions.BookNotFoundException;
 
 import java.util.List;
 import java.util.Optional;
@@ -38,8 +39,12 @@ public class BookServiceImpl implements BookService {
     @Transactional(readOnly = true)
     @Override
     public List<BookDto> findAll() {
-        return bookRepository.findAll().stream()
+        var books = bookRepository.findAll().stream()
                 .map(bookConverter::convertEntityToDto).toList();
+        if (books.isEmpty()) {
+            throw new BookNotFoundException();
+        }
+        return books;
     }
 
     @Transactional

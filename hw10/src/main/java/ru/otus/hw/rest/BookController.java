@@ -26,27 +26,23 @@ public class BookController {
 
     @GetMapping("/api/v1/books")
     public List<BookDto> getAllBooks() {
-        List<BookDto> books = bookService.findAll();
-        if (books.isEmpty()) {
-            throw new BookNotFoundException();
-        }
-        return books;
+        return bookService.findAll();
     }
 
-    @GetMapping("/api/v1/book/{id}")
+    @GetMapping("/api/v1/books/{id}")
     public BookDto getBookById(@PathVariable("id") long id) {
         BookDto book = bookService.findById(id)
-                .orElseThrow(BookNotFoundException::new);//переделать исключение
+                .orElseThrow(BookNotFoundException::new);
         return book;
     }
 
-    @DeleteMapping("/api/v1/book/{id}")
+    @DeleteMapping("/api/v1/books/{id}")
     public ResponseEntity<Void> deleteBookById(@PathVariable("id") long id) {
         bookService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/api/v1/savebook")
+    @PostMapping("/api/v1/books")
     public ResponseEntity<BookDto> addBook(@Valid @RequestBody BookDto bookDto) {
         var genresIds = bookDto.genres().stream()
                 .map(GenreDto::id).collect(Collectors.toSet());
@@ -54,7 +50,7 @@ public class BookController {
         return ResponseEntity.ok(insertedBook);
     }
 
-    @PutMapping("/api/v1/savebook")
+    @PutMapping("/api/v1/books")
     public ResponseEntity<BookDto> updateBook(@Valid @RequestBody BookDto bookDto) {
         var genresIds = bookDto.genres().stream()
                 .map(GenreDto::id).collect(Collectors.toSet());
