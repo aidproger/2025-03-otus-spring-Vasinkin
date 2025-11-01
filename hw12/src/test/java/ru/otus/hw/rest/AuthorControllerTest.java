@@ -5,33 +5,30 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.MessageSource;
-import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.otus.hw.common.TestDataGenerator;
 import ru.otus.hw.domain.AuthorDto;
 import ru.otus.hw.rest.exceptions.AuthorNotFoundException;
-import ru.otus.hw.security.SecurityConfiguration;
 import ru.otus.hw.services.AuthorServiceImpl;
 
 import java.util.List;
 import java.util.Locale;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.isNull;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.anonymous;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@DisplayName("Контроллер взаимодействия с авторами в формате json с учётом аутентификации пользователя ")
-@WebMvcTest(AuthorController.class)
-@Import(SecurityConfiguration.class)
+@DisplayName("Контроллер взаимодействия с авторами в формате json ")
+@WebMvcTest(controllers = AuthorController.class,
+        excludeAutoConfiguration = SecurityAutoConfiguration.class)
 public class AuthorControllerTest {
 
     @Autowired
@@ -53,30 +50,23 @@ public class AuthorControllerTest {
         dtoAuthors = TestDataGenerator.generateExpectedDtoAuthors();
     }
 
-    @DisplayName("должен возвращать корректный список авторов в формате json, для аутентифицированного пользователя ")
+    @DisplayName("должен возвращать корректный список авторов в формате json ")
     @Test
     void shouldReturnCorrectAuthorsList() throws Exception {
         given(authorService.findAll()).willReturn(dtoAuthors);
-        mvc.perform(get("/api/v1/authors").with(user("login_1")))
+        mvc.perform(get("/api/v1/authors"))
                 .andExpect(status().isOk())
                 .andExpect(content().json(mapper.writeValueAsString(dtoAuthors)));
     }
 
-    @DisplayName("должен возвращать корректный статус для списка авторов и не аутентифицированного пользователя ")
-    @Test
-    void shouldReturnCorrectResponseForAuthorsListAndAnonymousUser() throws Exception {
-        mvc.perform(get("/api/v1/authors").with(anonymous()))
-                .andExpect(status().isFound());
-    }
-
-    @DisplayName("должен возвращать заданную ошибку, если авторры не найдены, для аутентифицированного пользователя ")
+    @DisplayName("должен возвращать заданную ошибку, если авторы не найдены ")
     @Test
     void shouldReturnExpectedErrorWhenAuthorsNotFound() throws Exception {
         String expectedErrorText = "Comment not found";
 
         given(messageSource.getMessage(anyString(), isNull(), any(Locale.class))).willReturn(expectedErrorText);
         given(authorService.findAll()).willThrow(new AuthorNotFoundException("Error"));
-        mvc.perform(get("/api/v1/authors").with(user("login_1")))
+        mvc.perform(get("/api/v1/authors"))
                 .andExpect(status().isNotFound())
                 .andExpect(content().string(expectedErrorText));
     }

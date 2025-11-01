@@ -5,7 +5,11 @@ import ru.otus.hw.domain.AuthorDto;
 import ru.otus.hw.domain.BookDto;
 import ru.otus.hw.domain.CommentDto;
 import ru.otus.hw.domain.GenreDto;
-import ru.otus.hw.models.*;
+import ru.otus.hw.models.Author;
+import ru.otus.hw.models.Genre;
+import ru.otus.hw.models.Book;
+import ru.otus.hw.models.Comment;
+import ru.otus.hw.models.User;
 
 import java.util.List;
 import java.util.stream.IntStream;

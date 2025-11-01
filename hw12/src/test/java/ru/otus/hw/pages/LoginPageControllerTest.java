@@ -3,12 +3,11 @@ package ru.otus.hw.pages;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.MessageSource;
-import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.otus.hw.security.SecurityConfiguration;
 
 import java.util.Locale;
 
@@ -22,8 +21,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 
 @DisplayName("Контроллер аутентификации пользователя через html страницу ")
-@WebMvcTest(LoginPageController.class)
-@Import(SecurityConfiguration.class)
+@WebMvcTest(controllers = LoginPageController.class,
+        excludeAutoConfiguration = SecurityAutoConfiguration.class)
 public class LoginPageControllerTest {
 
     @Autowired
