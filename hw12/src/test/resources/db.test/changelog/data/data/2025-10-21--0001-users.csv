@@ -1,0 +1,4 @@
+login;password;last_name;first_name;middle_name;birth_date;phone;email;active
+login_1;$2a$10$iGa91gHU17KO8PwnzsqrFeOJOz6lqf47..DAdElmJiKvhOiDGNpkS;l_name_1;f_name_1;m_name_1;2001-01-01;+7(111)222-33-44;email_1@mail.ru;1
+login_2;$2a$10$daEJAgkhlygmf7wqETPg.ek6F2aUu.jn0EuIEBDNSebwqfi9.I6kO;l_name_2;f_name_2;m_name_2;2002-02-02;+7(222)222-33-44;email_2@mail.ru;1
+login_3;$2a$10$HlkrG4QSV1xLx1eXC7lHEuh65/G8MGpQAc9LcSwuoeGVsCsgcricW;l_name_3;f_name_3;m_name_3;2003-01-01;+7(333)222-33-44;email_3@mail.ru;1
