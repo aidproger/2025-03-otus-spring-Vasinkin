@@ -35,8 +35,6 @@ public class CommentServiceImpl implements CommentService {
     @Transactional(readOnly = true)
     @Override
     public List<CommentDto> findAllByBookId(String id) {
-        bookRepository.findById(id)
-                .orElseThrow(() -> new DocumentNotFoundException("Book with id %s not found".formatted(id)));
         var comments = commentRepository.findAllByBookId(id);
         if (comments.isEmpty()) {
             return List.of();
@@ -70,16 +68,14 @@ public class CommentServiceImpl implements CommentService {
     @Transactional
     @Override
     public void deleteById(String id) {
-        var comment = commentRepository.findById(id).
-                orElseThrow(() -> new DocumentNotFoundException("Comment with id %s not found".formatted(id)));
-        commentRepository.delete(comment);
+        commentRepository.deleteById(id);
     }
 
     private Comment save(String id, String text, String bookId) {
-        bookRepository.findById(bookId)
+        var book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new DocumentNotFoundException("Book with id %s not found".formatted(bookId)));
 
-        var comment = new Comment(id, text, bookId);
+        var comment = new Comment(id, text, book);
         return commentRepository.save(comment);
     }
 

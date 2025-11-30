@@ -2,53 +2,26 @@ package ru.otus.hw.mongock.changelog;
 
 import com.github.cloudyrock.mongock.ChangeLog;
 import com.github.cloudyrock.mongock.ChangeSet;
-import com.mongodb.client.MongoDatabase;
-import org.bson.Document;
-import org.springframework.boot.configurationprocessor.json.JSONArray;
-import org.springframework.boot.configurationprocessor.json.JSONException;
+import ru.otus.hw.models.Comment;
+import ru.otus.hw.repositories.BookRepository;
+import ru.otus.hw.repositories.CommentRepository;
 
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @ChangeLog(order = "002")
 public class DatabaseChangelogV2 {
 
     @ChangeSet(order = "001", id = "addComments", author = "aidproger")
-    public void addComments(MongoDatabase db) throws JSONException {
-        var comments = db.getCollection("comments");
-        var books = db.getCollection("books");
-
-        var jsonArray = "[{ \"_id\": \"1\", \"text\": \"comment_1\" }," +
-                "{ \"_id\": \"2\", \"text\": \"comment_2\" }," +
-                "{ \"_id\": \"3\", \"text\": \"comment_3\" }," +
-                "{ \"_id\": \"4\", \"text\": \"comment_4\" }," +
-                "{ \"_id\": \"5\", \"text\": \"comment_5\" }," +
-                "{ \"_id\": \"6\", \"text\": \"comment_6\" }," +
-                "{ \"_id\": \"7\", \"text\": \"comment_7\" }," +
-                "{ \"_id\": \"8\", \"text\": \"comment_8\" }," +
-                "{ \"_id\": \"9\", \"text\": \"comment_9\" }," +
-                "{ \"_id\": \"10\", \"text\": \"comment_10\" }," +
-                "{ \"_id\": \"11\", \"text\": \"comment_11\" }," +
-                "{ \"_id\": \"12\", \"text\": \"comment_12\" }]";
-
-        var array = new JSONArray(jsonArray);
-
-        int indexBegin = 0;
-        int indexEnd = 3;
-        for (Document book : books.find()) {
-            var docs = IntStream.range(indexBegin, indexEnd)
-                    .mapToObj(i -> {
-                        try {
-                            return Document.parse(array.getJSONObject(i).put("book_id", book.get("_id")).toString());
-                        } catch (JSONException jsone) {
-                            throw new RuntimeException(jsone.toString());
-                        }
+    public void addComments(BookRepository bookRepository, CommentRepository commentRepository) {
+        bookRepository.findAll().forEach(book -> {
+            var comments = IntStream.range(1, 4).boxed()
+                    .map(i -> {
+                        String id = String.valueOf(i + (Integer.parseInt(book.getId()) - 1) * 3);
+                        return new Comment(id, "comment_" + id, book);
                     })
-                    .collect(Collectors.toList());
-            comments.insertMany(docs);
-            indexBegin += 3;
-            indexEnd += 3;
-        }
+                    .toList();
+            commentRepository.saveAll(comments);
+        });
     }
 
 }

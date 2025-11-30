@@ -6,10 +6,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.hw.common.TestDataGenerator;
 import ru.otus.hw.domain.CommentDto;
+import ru.otus.hw.models.Book;
+import ru.otus.hw.models.Comment;
 
 import java.util.List;
 
@@ -23,6 +28,9 @@ public class CommentServiceImplTest {
 
     @Autowired
     private CommentServiceImpl commentService;
+
+    @Autowired
+    private MongoOperations mongoOperations;
 
     private static final long SECOND_COMMENT_ID = 2L;
 
@@ -68,7 +76,8 @@ public class CommentServiceImplTest {
                 .matches(comment -> comment.id() != null)
                 .usingRecursiveComparison().ignoringExpectedNullFields().isEqualTo(expectedComment);
 
-        commentService.deleteById(expectedComment.id());
+        mongoOperations.remove(
+                new Query(Criteria.where("_id").is(returnedComment.id())), Comment.class);
     }
 
     @DisplayName("должен сохранять измененный комментарий и возвращать dto ")
@@ -83,6 +92,18 @@ public class CommentServiceImplTest {
                 .usingRecursiveComparison().ignoringExpectedNullFields().isEqualTo(expectedComment);
 
         commentService.update(String.valueOf(SECOND_COMMENT_ID), dtoComments.get(1).text(), String.valueOf(FIRST_BOOK_ID));
+    }
+
+    @DisplayName("должен удалять комментарий по id ")
+    @Test
+    void shouldDeleteComment() {
+        var expectedBook = mongoOperations.findById(FIRST_BOOK_ID, Book.class);
+        var expectedComment = mongoOperations.insert(
+                new Comment(null, "CommentForDelete", expectedBook));
+
+        assertThat(mongoOperations.findById(expectedComment.getId(), Comment.class)).isNotNull();
+        commentService.deleteById(expectedComment.getId());
+        assertThat(mongoOperations.findById(expectedComment.getId(), Comment.class)).isNull();
     }
 
 }

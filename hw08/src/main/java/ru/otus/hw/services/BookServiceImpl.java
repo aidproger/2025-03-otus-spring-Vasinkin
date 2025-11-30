@@ -9,6 +9,7 @@ import ru.otus.hw.exceptions.DocumentNotFoundException;
 import ru.otus.hw.models.Book;
 import ru.otus.hw.repositories.AuthorRepository;
 import ru.otus.hw.repositories.BookRepository;
+import ru.otus.hw.repositories.CommentRepository;
 import ru.otus.hw.repositories.GenreRepository;
 
 import java.util.List;
@@ -28,6 +29,8 @@ public class BookServiceImpl implements BookService {
     private final AuthorRepository authorRepository;
 
     private final GenreRepository genreRepository;
+
+    private final CommentRepository commentRepository;
 
     @Transactional(readOnly = true)
     @Override
@@ -61,9 +64,8 @@ public class BookServiceImpl implements BookService {
     @Transactional
     @Override
     public void deleteById(String id) {
-        var book = bookRepository.findById(id)
-                .orElseThrow(() -> new DocumentNotFoundException("Book with id %s not found".formatted(id)));
-        bookRepository.delete(book);
+        bookRepository.deleteById(id);
+        commentRepository.deleteAllByBookId(id);
     }
 
     private Book save(String id, String title, String authorId, Set<String> genresIds) {

@@ -6,6 +6,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.hw.common.TestDataGenerator;
@@ -15,6 +18,10 @@ import ru.otus.hw.converters.GenreConverter;
 import ru.otus.hw.domain.AuthorDto;
 import ru.otus.hw.domain.BookDto;
 import ru.otus.hw.domain.GenreDto;
+import ru.otus.hw.models.Author;
+import ru.otus.hw.models.Book;
+import ru.otus.hw.models.Comment;
+import ru.otus.hw.models.Genre;
 import ru.otus.hw.repositories.AuthorRepositoryImpl;
 import ru.otus.hw.repositories.GenreRepositoryImpl;
 
@@ -34,6 +41,9 @@ public class BookServiceImplTest {
     @Autowired
     private BookServiceImpl bookService;
 
+    @Autowired
+    private MongoOperations mongoOperations;
+
     private List<AuthorDto> dtoAuthors;
 
     private List<GenreDto> dtoGenres;
@@ -43,6 +53,8 @@ public class BookServiceImplTest {
     private static final long FIRST_BOOK_ID = 1L;
 
     private static final long SECOND_BOOK_ID = 2L;
+
+    private String insertBookId;
 
     @BeforeEach
     void setUp() {
@@ -91,7 +103,8 @@ public class BookServiceImplTest {
                 .matches(book -> book.id() != null)
                 .usingRecursiveComparison().ignoringExpectedNullFields().isEqualTo(expectedBook);
 
-        bookService.deleteById(returnedBook.id());
+        mongoOperations.remove(
+                new Query(Criteria.where("_id").is(returnedBook.id())), Book.class);
     }
 
     @DisplayName("должен сохранять измененную книгу и возвращать dto ")
@@ -108,5 +121,22 @@ public class BookServiceImplTest {
 
         bookService.update(String.valueOf(SECOND_BOOK_ID), "BookTitle_2", dtoAuthors.get(1).id(),
                 Set.of(dtoGenres.get(2).id(), dtoGenres.get(3).id()));
+    }
+
+    @DisplayName("должен удалять книгу по id ")
+    @Test
+    void shouldDeleteBook() {
+        var expectedBook = mongoOperations.insert(
+                new Book(null, "BookTitleForDellete",
+                        new Author("2", "Author_2"),
+                        List.of(new Genre("3", "Genre_3"), new Genre("4", "Genre_4"))));
+        var expectedComment = mongoOperations.insert(
+                new Comment(null, "CommentForDelete", expectedBook));
+
+        assertThat(mongoOperations.findById(expectedBook.getId(), Book.class)).isNotNull();
+        assertThat(mongoOperations.findById(expectedComment.getId(), Comment.class)).isNotNull();
+        bookService.deleteById(expectedBook.getId());
+        assertThat(mongoOperations.findById(expectedBook.getId(), Book.class)).isNull();
+        assertThat(mongoOperations.findById(expectedComment.getId(), Comment.class)).isNull();
     }
 }

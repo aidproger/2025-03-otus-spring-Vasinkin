@@ -41,7 +41,6 @@ public class DatabaseChangelogV1 {
 
         mongoCollection.insertMany(docsBooks);
 
-
     }
 
 }
