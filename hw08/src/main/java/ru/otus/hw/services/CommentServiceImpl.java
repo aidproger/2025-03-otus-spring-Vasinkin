@@ -61,6 +61,10 @@ public class CommentServiceImpl implements CommentService {
     @Transactional
     @Override
     public CommentDto update(String id, String text, String bookId) {
+        if (!commentRepository.existsById(id)) {
+            throw new DocumentNotFoundException("Comment with id %s not found".formatted(id));
+        }
+
         var comment = save(id, text, bookId);
         return new CommentDto(comment.getId(), comment.getText());
     }
@@ -68,6 +72,10 @@ public class CommentServiceImpl implements CommentService {
     @Transactional
     @Override
     public void deleteById(String id) {
+        if (!commentRepository.existsById(id)) {
+            throw new DocumentNotFoundException("Comment with id %s not found".formatted(id));
+        }
+
         commentRepository.deleteById(id);
     }
 

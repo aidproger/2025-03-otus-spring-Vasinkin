@@ -1,5 +1,6 @@
 package ru.otus.hw.services;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,6 +10,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.hw.common.TestDataGenerator;
@@ -40,9 +42,28 @@ public class CommentServiceImplTest {
 
     private List<CommentDto> dtoComments;
 
+    private String insertCommentId;
+
     @BeforeEach
     void setUp() {
         dtoComments = TestDataGenerator.generateExpectedDbCommentsByBookId(NUMBER_OF_COMMENTS_FOR_FIRST_BOOK_ID);
+    }
+
+    @AfterEach
+    void tearDown() {
+        if (insertCommentId != null) {
+            mongoOperations.remove(
+                    new Query(Criteria.where("_id").is(insertCommentId)), Comment.class);
+            insertCommentId = null;
+        }
+
+        var book = mongoOperations.findById(String.valueOf(FIRST_BOOK_ID), Book.class);
+
+        var query = new Query(Criteria.where("_id").is(String.valueOf(SECOND_COMMENT_ID)));
+        var update = new Update();
+        update.set("text", dtoComments.get(1).text());
+        update.set("book", book);
+        mongoOperations.updateFirst(query, update, Comment.class);
     }
 
     @DisplayName("должен загружать список комментариев по id книги в виде dto ")
@@ -70,14 +91,13 @@ public class CommentServiceImplTest {
         var returnedComment = commentService.insert("CommentText_10500", String.valueOf(FIRST_BOOK_ID));
 
         assertThat(returnedComment).isNotNull();
+        insertCommentId = returnedComment.id();
         var expectedComment = new CommentDto(returnedComment.id(), "CommentText_10500");
 
         assertThat(returnedComment).isNotNull()
                 .matches(comment -> comment.id() != null)
                 .usingRecursiveComparison().ignoringExpectedNullFields().isEqualTo(expectedComment);
 
-        mongoOperations.remove(
-                new Query(Criteria.where("_id").is(returnedComment.id())), Comment.class);
     }
 
     @DisplayName("должен сохранять измененный комментарий и возвращать dto ")
@@ -91,7 +111,6 @@ public class CommentServiceImplTest {
                 .matches(comment -> comment.id() != null)
                 .usingRecursiveComparison().ignoringExpectedNullFields().isEqualTo(expectedComment);
 
-        commentService.update(String.valueOf(SECOND_COMMENT_ID), dtoComments.get(1).text(), String.valueOf(FIRST_BOOK_ID));
     }
 
     @DisplayName("должен удалять комментарий по id ")

@@ -55,8 +55,10 @@ public class BookServiceImpl implements BookService {
     @Transactional
     @Override
     public BookDto update(String id, String title, String authorId, Set<String> genresIds) {
-        bookRepository.findById(id)
-                .orElseThrow(() -> new DocumentNotFoundException("Book with id %s not found".formatted(id)));
+        if (!bookRepository.existsById(id)) {
+            throw new DocumentNotFoundException("Book with id %s not found".formatted(id));
+        }
+
         var bookSaved = save(id, title, authorId, genresIds);
         return bookConverter.convertDocumentToDto(bookSaved);
     }
@@ -64,6 +66,10 @@ public class BookServiceImpl implements BookService {
     @Transactional
     @Override
     public void deleteById(String id) {
+        if (!bookRepository.existsById(id)) {
+            throw new DocumentNotFoundException("Book with id %s not found".formatted(id));
+        }
+
         bookRepository.deleteById(id);
         commentRepository.deleteAllByBookId(id);
     }

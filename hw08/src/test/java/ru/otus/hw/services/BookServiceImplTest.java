@@ -1,5 +1,6 @@
 package ru.otus.hw.services;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,6 +10,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.hw.common.TestDataGenerator;
@@ -63,6 +65,23 @@ public class BookServiceImplTest {
         dtoBooks = TestDataGenerator.generateExpectedDtoBooks(dtoAuthors, dtoGenres);
     }
 
+    @AfterEach
+    void tearDown() {
+        if (insertBookId != null) {
+            mongoOperations.remove(
+                    new Query(Criteria.where("_id").is(insertBookId)), Book.class);
+            insertBookId = null;
+        }
+
+        var query = new Query(Criteria.where("_id").is(String.valueOf(SECOND_BOOK_ID)));
+        var update = new Update();
+        update.set("title", "BookTitle_2");
+        update.set("author", new Author(dtoAuthors.get(1).id(), dtoAuthors.get(1).fullName()));
+        update.set("genres", Set.of(new Genre(dtoGenres.get(2).id(), dtoGenres.get(2).name()),
+                new Genre(dtoGenres.get(3).id(), dtoGenres.get(3).name())));
+        mongoOperations.updateFirst(query, update, Book.class);
+    }
+
     @DisplayName("должен загружать книгу по id в виде dto ")
     @Test
     void shouldReturnCorrectBookById() {
@@ -85,7 +104,9 @@ public class BookServiceImplTest {
         var expectedBooks = dtoBooks;
         var actualBooks = bookService.findAll();
 
-        assertThat(actualBooks).containsExactlyElementsOf(expectedBooks);
+        assertThat(actualBooks).usingRecursiveComparison()
+                .ignoringCollectionOrder().isEqualTo(expectedBooks);
+
         actualBooks.forEach(System.out::println);
     }
 
@@ -96,15 +117,14 @@ public class BookServiceImplTest {
                 Set.of(dtoGenres.get(0).id(), dtoGenres.get(2).id()));
 
         assertThat(returnedBook).isNotNull();
+        insertBookId=returnedBook.id();
+
         var expectedBook = new BookDto(returnedBook.id(), "BookTitle_10500", dtoAuthors.get(0),
                 List.of(dtoGenres.get(0), dtoGenres.get(2)));
 
         assertThat(returnedBook).isNotNull()
                 .matches(book -> book.id() != null)
                 .usingRecursiveComparison().ignoringExpectedNullFields().isEqualTo(expectedBook);
-
-        mongoOperations.remove(
-                new Query(Criteria.where("_id").is(returnedBook.id())), Book.class);
     }
 
     @DisplayName("должен сохранять измененную книгу и возвращать dto ")
@@ -118,9 +138,6 @@ public class BookServiceImplTest {
         assertThat(returnedBook).isNotNull()
                 .matches(book -> book.id() != null)
                 .usingRecursiveComparison().ignoringExpectedNullFields().isEqualTo(expectedBook);
-
-        bookService.update(String.valueOf(SECOND_BOOK_ID), "BookTitle_2", dtoAuthors.get(1).id(),
-                Set.of(dtoGenres.get(2).id(), dtoGenres.get(3).id()));
     }
 
     @DisplayName("должен удалять книгу по id ")
