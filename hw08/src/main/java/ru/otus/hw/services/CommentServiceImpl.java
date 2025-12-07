@@ -4,7 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.hw.domain.CommentDto;
-import ru.otus.hw.exceptions.DocumentNotFoundException;
+import ru.otus.hw.exceptions.BookNotFoundException;
+import ru.otus.hw.exceptions.CommentNotFoundException;
 import ru.otus.hw.models.Comment;
 import ru.otus.hw.repositories.BookRepository;
 import ru.otus.hw.repositories.CommentRepository;
@@ -62,7 +63,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public CommentDto update(String id, String text, String bookId) {
         if (!commentRepository.existsById(id)) {
-            throw new DocumentNotFoundException("Comment with id %s not found".formatted(id));
+            throw new CommentNotFoundException("Comment with id %s not found".formatted(id));
         }
 
         var comment = save(id, text, bookId);
@@ -73,7 +74,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public void deleteById(String id) {
         if (!commentRepository.existsById(id)) {
-            throw new DocumentNotFoundException("Comment with id %s not found".formatted(id));
+            throw new CommentNotFoundException("Comment with id %s not found".formatted(id));
         }
 
         commentRepository.deleteById(id);
@@ -81,7 +82,7 @@ public class CommentServiceImpl implements CommentService {
 
     private Comment save(String id, String text, String bookId) {
         var book = bookRepository.findById(bookId)
-                .orElseThrow(() -> new DocumentNotFoundException("Book with id %s not found".formatted(bookId)));
+                .orElseThrow(() -> new BookNotFoundException("Book with id %s not found".formatted(bookId)));
 
         var comment = new Comment(id, text, book);
         return commentRepository.save(comment);

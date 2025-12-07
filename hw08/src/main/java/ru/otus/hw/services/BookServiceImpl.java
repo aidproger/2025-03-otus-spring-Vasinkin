@@ -5,7 +5,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.hw.converters.BookConverter;
 import ru.otus.hw.domain.BookDto;
-import ru.otus.hw.exceptions.DocumentNotFoundException;
+import ru.otus.hw.exceptions.AuthorNotFoundException;
+import ru.otus.hw.exceptions.BookNotFoundException;
+import ru.otus.hw.exceptions.GenreNotFoundException;
 import ru.otus.hw.models.Book;
 import ru.otus.hw.repositories.AuthorRepository;
 import ru.otus.hw.repositories.BookRepository;
@@ -56,7 +58,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public BookDto update(String id, String title, String authorId, Set<String> genresIds) {
         if (!bookRepository.existsById(id)) {
-            throw new DocumentNotFoundException("Book with id %s not found".formatted(id));
+            throw new BookNotFoundException("Book with id %s not found".formatted(id));
         }
 
         var bookSaved = save(id, title, authorId, genresIds);
@@ -67,7 +69,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public void deleteById(String id) {
         if (!bookRepository.existsById(id)) {
-            throw new DocumentNotFoundException("Book with id %s not found".formatted(id));
+            throw new BookNotFoundException("Book with id %s not found".formatted(id));
         }
 
         bookRepository.deleteById(id);
@@ -80,10 +82,10 @@ public class BookServiceImpl implements BookService {
         }
 
         var author = authorRepository.findById(authorId)
-                .orElseThrow(() -> new DocumentNotFoundException("Author with id %s not found".formatted(authorId)));
+                .orElseThrow(() -> new AuthorNotFoundException("Author with id %s not found".formatted(authorId)));
         var genres = genreRepository.findAllByIds(genresIds);
         if (isEmpty(genres) || genresIds.size() != genres.size()) {
-            throw new DocumentNotFoundException("One or all genres with ids %s not found".formatted(genresIds));
+            throw new GenreNotFoundException("One or all genres with ids %s not found".formatted(genresIds));
         }
 
         var book = new Book(id, title, author, genres);
