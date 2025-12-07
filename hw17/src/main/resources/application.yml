@@ -1,0 +1,17 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://hw12-postgres:5432/maindb
+    username: postgres
+    password: ${POSTGRES_PASSWORD}
+  shell:
+    interactive:
+      enabled: false
+  liquibase:
+    enabled: true
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+
+    show-sql: false
+
