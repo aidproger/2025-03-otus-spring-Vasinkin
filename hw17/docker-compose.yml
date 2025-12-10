@@ -1,0 +1,38 @@
+services:
+  hw12-postgres:
+    image: hw12-postgres:1.0.0
+    container_name: hw12-postgres
+    build:
+      context: ./db
+    environment:
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
+    secrets:
+        - postgres_password
+    ports:
+      - "5432:5432"
+    networks:
+      - hw12-network
+
+  hw12-authentication:
+    image: hw12-authentication:1.0.0
+    container_name: hw12-authentication
+    build:
+      context: .
+      args:
+        APP_NAME: hw12-authentication
+    environment:
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
+    secrets:
+      - postgres_password
+    ports:
+      - "8080:8080"
+    networks:
+      - hw12-network
+
+secrets:
+  postgres_password:
+    file: ./db/password.txt
+
+networks:
+  hw12-network:
+    driver: bridge
