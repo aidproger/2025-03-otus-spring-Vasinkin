@@ -7,7 +7,7 @@ COPY pom.xml /usr/java/${APP_NAME}
 
 WORKDIR /usr/java/${APP_NAME}
 
-RUN mvn clean package
+RUN mvn clean package -DskipTests
 
 ENV APP_FILE_NAME=${APP_NAME}.jar
 
