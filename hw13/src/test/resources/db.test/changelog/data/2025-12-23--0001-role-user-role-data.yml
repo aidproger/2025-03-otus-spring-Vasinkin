@@ -1,26 +1,26 @@
 databaseChangeLog:
   - changeSet:
-      id: 2025-06-06--0001-book-data
+      id: 2025-12-23--0001-role-data
       author: aidproger
       context: data
       runOnChange: true
       loadData:
-        file: data/2025-06-06--0001-books.csv
+        file: data/2025-12-23--0001-roles.csv
         relativeToChangelogFile: true
         separator: ;
         quotChar: '"'
         encoding: UTF-8
-        tableName: books
+        tableName: roles
   - changeSet:
-      id: 2025-06-06--0001-book-genre-data
+      id: 2025-12-23--0001-user-role-data
       author: aidproger
       context: data
       runOnChange: true
       loadUpdateData:
-        primaryKey: book_id,genre_id
-        file: data/2025-06-06--0002-books-genres.csv
+        primaryKey: user_id,role_id
+        file: data/2025-12-23--0002-users-roles.csv
         relativeToChangelogFile: true
         separator: ;
         quotChar: '"'
         encoding: UTF-8
-        tableName: books_genres
+        tableName: users_roles

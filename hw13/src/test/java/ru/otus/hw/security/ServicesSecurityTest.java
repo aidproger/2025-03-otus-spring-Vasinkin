@@ -65,15 +65,11 @@ public class ServicesSecurityTest {
 
     @BeforeEach
     void setUp() {
-        given(commentRepository.findAllByBookId(anyLong())).willReturn(TestDataGenerator.generateListEmptyComments());
         given(bookRepository.findById(anyLong())).willReturn(TestDataGenerator.generateOptionalEmptyBook());
         given(commentRepository.save(any(Comment.class))).willReturn(TestDataGenerator.generateEmptyComment());
         given(commentRepository.findById(anyLong())).willReturn(TestDataGenerator.generateOptionalEmptyComment());
-        given(bookRepository.findAll()).willReturn(TestDataGenerator.generateListEmptyBooks());
         given(authorRepository.findById(anyLong())).willReturn(TestDataGenerator.generateOptionalEmptyAuthor());
         given(genreRepository.findAllById(any(Set.class))).willReturn(TestDataGenerator.generateListEmptyGenres());
-        given(authorRepository.findAll()).willReturn(TestDataGenerator.generateListEmptyAuthors());
-        given(genreRepository.findAll()).willReturn(TestDataGenerator.generateListEmptyGenres());
     }
 
     @DisplayName("должен проверять привелегии доступа к методам сервисов ")

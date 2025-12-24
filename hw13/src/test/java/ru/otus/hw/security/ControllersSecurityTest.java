@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -67,16 +68,20 @@ public class ControllersSecurityTest {
     }
 
     @DisplayName("должен возвращать ожидаемый http статус ")
-    @ParameterizedTest(name = "{0} {1} для пользователя {2} должен вернуться {3} http статус")
+    @ParameterizedTest(name = "{0} {1} для пользователя {2} с правами {3} должен вернуться {4} http статус")
     @MethodSource("ru.otus.hw.common.SecurityTestDataGenerator#getSecurityTestData")
     void shouldReturnExpectedStatus(String method, String url,
-                                    String userName, int status,
+                                    String userName, String roles, int status,
                                     boolean checkLoginRedirection) throws Exception {
 
         var request = method2RequestBuilder(method, url);
 
         if (Objects.nonNull(userName)) {
-            request = request.with(user(userName));
+            UserRequestPostProcessor userRequestPostProcessor = user(userName);
+            if (Objects.nonNull(roles)) {
+                userRequestPostProcessor.roles(roles.split(";"));
+            }
+            request = request.with(userRequestPostProcessor);
         }
         ResultActions resultActions = mvc.perform(request)
                 .andExpect(status().is(status));

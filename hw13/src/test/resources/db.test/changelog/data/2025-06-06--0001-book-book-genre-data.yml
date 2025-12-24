@@ -17,7 +17,7 @@ databaseChangeLog:
       context: data
       runOnChange: true
       loadUpdateData:
-        primaryKey: book_id, genre_id
+        primaryKey: book_id,genre_id
         file: data/2025-06-06--0002-books-genres.csv
         relativeToChangelogFile: true
         separator: ;

@@ -5,6 +5,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import ru.otus.hw.models.Role;
 import ru.otus.hw.models.User;
 import ru.otus.hw.repositories.UserRepository;
 
@@ -21,7 +22,7 @@ public class AuthorizeUserDetailsService implements UserDetailsService {
         return org.springframework.security.core.userdetails.User
                 .withUsername(user.getLogin())
                 .password(user.getPassword())
-                .roles(user.getRoles().split(","))
+                .roles(user.getRoles().stream().map(Role::getName).toArray(String[]::new))
                 .build();
     }
 

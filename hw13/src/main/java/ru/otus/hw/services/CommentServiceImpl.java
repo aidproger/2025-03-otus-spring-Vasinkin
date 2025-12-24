@@ -27,7 +27,6 @@ public class CommentServiceImpl implements CommentService {
 
     private final AclServiceWrapperService aclServiceWrapperService;
 
-    @PreAuthorize("canRead(T(ru.otus.hw.models.Comment))")
     @Transactional(readOnly = true)
     @Override
     public List<CommentDto> findAllByBookId(long id) {
@@ -40,7 +39,6 @@ public class CommentServiceImpl implements CommentService {
                 .toList();
     }
 
-    @PreAuthorize("canRead(T(ru.otus.hw.models.Comment))")
     @Transactional(readOnly = true)
     @Override
     public Optional<CommentDto> findById(long id) {
@@ -48,7 +46,6 @@ public class CommentServiceImpl implements CommentService {
                 comment -> new CommentDto(comment.getId(), comment.getText()));
     }
 
-    @PreAuthorize("canCreate(T(ru.otus.hw.models.Comment))")
     @Transactional
     @Override
     public CommentDto insert(String text, long bookId) {

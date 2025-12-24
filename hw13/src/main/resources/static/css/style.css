@@ -102,3 +102,7 @@ select {
   font-size: 30px;
   color: red;
 }
+.error-message{
+  color: #b71c1c;
+  margin: 0 0 12px;
+}

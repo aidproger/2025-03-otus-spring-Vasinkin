@@ -36,14 +36,12 @@ public class BookServiceImpl implements BookService {
 
     private final AclServiceWrapperService aclServiceWrapperService;
 
-    @PreAuthorize("canRead(T(ru.otus.hw.models.Book))")
     @Transactional(readOnly = true)
     @Override
     public Optional<BookDto> findById(long id) {
         return bookRepository.findById(id).map(bookConverter::convertEntityToDto);
     }
 
-    @PreAuthorize("canRead(T(ru.otus.hw.models.Book))")
     @Transactional(readOnly = true)
     @Override
     public List<BookDto> findAll() {
@@ -55,7 +53,6 @@ public class BookServiceImpl implements BookService {
         return books;
     }
 
-    @PreAuthorize("canCreate(T(ru.otus.hw.models.Book))")
     @Transactional
     @Override
     public BookDto insert(String title, long authorId, Set<Long> genresIds) {

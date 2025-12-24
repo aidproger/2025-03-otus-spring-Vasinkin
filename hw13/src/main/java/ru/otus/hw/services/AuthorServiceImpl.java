@@ -1,7 +1,6 @@
 package ru.otus.hw.services;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.hw.domain.AuthorDto;
@@ -16,7 +15,6 @@ public class AuthorServiceImpl implements AuthorService {
 
     private final AuthorRepository authorRepository;
 
-    @PreAuthorize("canRead(T(ru.otus.hw.models.Author))")
     @Transactional(readOnly = true)
     @Override
     public List<AuthorDto> findAll() {

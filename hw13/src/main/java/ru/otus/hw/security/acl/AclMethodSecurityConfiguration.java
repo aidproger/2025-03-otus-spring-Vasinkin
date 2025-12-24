@@ -9,7 +9,7 @@ import org.springframework.security.config.annotation.method.configuration.Globa
 
 @RequiredArgsConstructor
 @Configuration
-@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class AclMethodSecurityConfiguration extends GlobalMethodSecurityConfiguration {
 
     private final AclService aclService;
