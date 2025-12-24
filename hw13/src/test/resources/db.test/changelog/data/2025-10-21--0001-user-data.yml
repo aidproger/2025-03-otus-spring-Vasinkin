@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025-10-21--0001-user-data
+      author: aidproger
+      context: data
+      runOnChange: true
+      loadData:
+        file: data/2025-10-21--0001-users.csv
+        relativeToChangelogFile: true
+        separator: ;
+        quotChar: '"'
+        encoding: UTF-8
+        tableName: users

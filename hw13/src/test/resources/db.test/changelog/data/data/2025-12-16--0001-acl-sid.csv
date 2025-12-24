@@ -1,0 +1,11 @@
+principal;sid
+0;ROLE_ACL_ADMIN
+0;ROLE_ADMIN
+0;ROLE_READ
+0;ROLE_BOOK_ADD
+0;ROLE_COMMENT_ADD
+1;admin
+1;login_1
+1;login_2
+1;login_3
+1;login_4

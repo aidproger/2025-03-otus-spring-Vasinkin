@@ -1,0 +1,108 @@
+table, th, td {
+      border: 1px solid black;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 8px;
+      text-align: center;
+    }
+select {
+  width: 100%;
+  box-sizing: border-box;
+}
+.block {
+    margin-bottom: 20px;
+  }
+.block-select {
+    margin-bottom: 18px;
+}
+.block-select2 {
+    margin-bottom: 36px;
+}
+.block-input {
+    margin-bottom: 17px;
+}
+.block-view {
+  margin-bottom: 10px;
+}
+.hide-column {
+    display: none;
+  }
+.select-div {
+  background-color: #E8E8E8;
+  width: 50%;
+  box-sizing: border-box;
+}
+.position-div{
+  margin-left: 20px;
+}
+.container {
+  display: flex;
+}
+.container-view {
+    display: flex;
+    justify-content: space-between;
+}
+.hide-button {
+    outline: none;
+    border: none;
+    background: none;
+    padding: 0;
+    margin: 0;
+}
+.button-pointer {
+    cursor: pointer;
+}
+.button-add-align {
+    float: right;
+}
+.position-button{
+  margin-left: 20px;
+}
+.comment-div {
+  width: 50%;
+  box-sizing: border-box;
+}
+.comment-input {
+  width: 100%;
+  box-sizing: border-box;
+}
+.input-error {
+  border-width: 2px;
+  border-style: solid;
+  border-color: red;
+}
+.login-input {
+  font-size: 30px;
+  border-radius: 4px;
+}
+.login-input:focus {
+  outline: 1px solid blue;
+  border-color: blue;
+}
+.login-button {
+  width: 150px;
+  margin: 0 auto;
+  font-size: 30px;
+  border-radius: 4px;
+  color: white;
+  background-color: #3399FF;
+}
+.login-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.login-align {
+  width: 400px;
+  margin: 0 auto;
+}
+.login-error {
+  margin: 0 auto;
+  font-size: 30px;
+  color: red;
+}
+.error-message{
+  color: #b71c1c;
+  margin: 0 0 12px;
+}

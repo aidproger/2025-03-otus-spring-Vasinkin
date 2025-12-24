@@ -1,0 +1,6 @@
+class
+ru.otus.hw.models.Author
+ru.otus.hw.models.Book
+ru.otus.hw.models.Comment
+ru.otus.hw.models.Genre
+ru.otus.hw.models.User

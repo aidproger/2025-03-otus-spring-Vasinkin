@@ -1,0 +1,50 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025-10-21--0001-user
+      author: aidproger
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: bigserial
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_users
+              - column:
+                  name: login
+                  type: varchar(256)
+              - column:
+                  name: password
+                  type: varchar(256)
+              - column:
+                  name: last_name
+                  type: varchar(256)
+              - column:
+                  name: first_name
+                  type: varchar(256)
+              - column:
+                  name: middle_name
+                  type: varchar(256)
+              - column:
+                  name: birth_date
+                  type: date
+              - column:
+                  name: phone
+                  type: varchar(25)
+              - column:
+                  name: email
+                  type: varchar(256)
+              - column:
+                  name: registration_date
+                  type: timestamp
+                  defaultValueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: active
+                  type: boolean
+              - column:
+                  name: roles
+                  type: varchar(256)
