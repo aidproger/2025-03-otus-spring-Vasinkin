@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025-12-19--0002-acl-entry-data
+      author: aidproger
+      context: data
+      runOnChange: true
+      loadData:
+        file: data/2025-12-19--0002-acl-entry.csv
+        relativeToChangelogFile: true
+        separator: ;
+        quotChar: '"'
+        encoding: UTF-8
+        tableName: acl_entry
