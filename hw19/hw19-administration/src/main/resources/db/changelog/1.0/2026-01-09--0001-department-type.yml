@@ -1,0 +1,19 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2026-01-09--0001-department-type
+      author: aidproger
+      changes:
+        - createTable:
+            tableName: departments_types
+            columns:
+              - column:
+                  name: id
+                  type: bigserial
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_departments_types
+              - column:
+                  name: name
+                  type: varchar(256)

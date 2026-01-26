@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2026-01-09--0002-department-data
+      author: aidproger
+      context: data
+      runOnChange: true
+      loadData:
+        file: data/2026-01-09--0002-departments.csv
+        relativeToChangelogFile: true
+        separator: ;
+        quotChar: '"'
+        encoding: UTF-8
+        tableName: departments

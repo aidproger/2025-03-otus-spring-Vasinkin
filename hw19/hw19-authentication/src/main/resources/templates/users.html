@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{users-title-page}">List of all users</title>
+    <link rel="stylesheet" href="/css/style.css?v=1">
+</head>
+<body>
+
+    <h3 th:text="#{lang-switcher-header}">Select language</h3>
+    <div class="block">
+        <div><a href="#" th:href="@{/admin(lang=en)}" th:text="#{en-lang-switch-button-caption}">Language - EN</a></div>
+        <div><a href="#" th:href="@{/admin(lang=ru)}" th:text="#{ru-lang-switch-button-caption}">Language - RU</a></div>
+    </div>
+
+    <div class="container block">
+        <div class="position-div">
+            <table id="usersTable">
+                <thead>
+                <tr>
+                    <th th:text="#{users-table-header-login}">Login</th>
+                    <th th:text="#{users-table-header-last-name}">Last name</th>
+                    <th th:text="#{users-table-header-first-name}">First name</th>
+                    <th th:text="#{users-table-header-middle-name}">Middle name</th>
+                    <th th:text="#{users-table-header-registration-date}">Registration date</th>
+                    <th th:text="#{users-table-header-last-accessed-at}">Last accessed at</th>
+                    <th th:text="#{users-table-header-active}">Active</th>
+                    <th th:text="#{users-table-header-roles-names}">Roles names</th>
+                    <th>
+                        <a class="button-pointer" href="/admin/user/0">
+                            <img th:src="@{/img/addicon25.png}" th:alt="#{user-add-title}" />
+                        </a>
+                    </th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>
+                        load from js function getUsers()
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="position-div">
+            <table id="rolesTable">
+                <thead>
+                <tr>
+                    <th th:text="#{roles-table-header-name}">Role name</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>
+                        load from js function getRoles()
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="position-div">
+            <table id="wellsTable">
+                <thead>
+                <tr>
+                    <th th:text="#{wells-table-header-sgti-code}">Sgti code</th>
+                    <th th:text="#{wells-table-header-code-name}">Code name</th>
+                    <th th:text="#{wells-table-header-full-name}">Full name</th>
+                    <th th:text="#{wells-table-header-creation-date}">Creation date</th>
+                    <th th:text="#{wells-table-header-completion-date}">Completion date</th>
+                    <th th:text="#{wells-table-header-begin-absolute-depth}">Begin absolute depth</th>
+                    <th th:text="#{wells-table-header-end-absolute-depth}">End absolute depth</th>
+                    <th th:text="#{wells-table-header-archive}">Archive</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>
+                        load from js function getWells()
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <div class="block">
+        <div><a href="#" th:href="@{/logout}" th:text="#{logout-reference}">Start page</a></div>
+    </div>
+
+    <span id="user-delete-title" th:text="#{delete-title}" hidden></span>
+    <span id="user-delete-question" th:text="#{user-delete-question}" hidden></span>
+    <span id="connection-forbidden-error-text" th:text="#{connection-forbidden-error-text}" hidden></span>
+    <span id="connection-unknown-error-text" th:text="#{unknown-error-text}" hidden></span>
+    <span id="users-table-active-yes" th:text="#{users-table-active-yes}" hidden></span>
+    <span id="users-table-active-no" th:text="#{users-table-active-no}" hidden></span>
+    <span id="user-edit-title" th:text="#{edit-title}" hidden></span>
+
+    <script src="/js/users.js"></script>
+
+</body>
+</html>

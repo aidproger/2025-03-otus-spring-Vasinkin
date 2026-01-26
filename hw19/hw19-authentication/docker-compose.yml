@@ -1,0 +1,70 @@
+services:
+  hw19-postgres:
+    image: hw19-postgres:1.0.0
+    container_name: hw19-postgres
+    build:
+      context: ./db
+    environment:
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
+    secrets:
+        - postgres_password
+    ports:
+      - "5432:5432"
+    networks:
+      - hw19-network
+
+  hw19-postgres-admin:
+    image: hw19-postgres-admin:1.0.0
+    container_name: hw19-postgres-admin
+    build:
+      context: ../hw19-administration/db
+    environment:
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
+    secrets:
+      - postgres_password
+    ports:
+      - "5433:5432"
+    networks:
+      - hw19-network
+
+  hw19-authentication:
+    image: hw19-authentication:1.0.0
+    container_name: hw19-authentication
+    build:
+      context: .
+      args:
+        APP_NAME: hw19-authentication
+    environment:
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
+    secrets:
+      - postgres_password
+    ports:
+      - "8081:8080"
+      - "8082:8090"
+    networks:
+      - hw19-network
+
+  hw19-administration:
+    image: hw19-administration:1.0.0
+    container_name: hw19-administration
+    build:
+      context: ../hw19-administration
+      args:
+        APP_NAME: hw19-administration
+    environment:
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
+    secrets:
+      - postgres_password
+    ports:
+      - "8070:8070"
+      - "8071:8091"
+    networks:
+      - hw19-network
+
+secrets:
+  postgres_password:
+    file: ./db/password.txt
+
+networks:
+  hw19-network:
+    driver: bridge
