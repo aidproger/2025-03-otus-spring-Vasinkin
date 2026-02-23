@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{books-title-page}">List of all books</title>
+    <link rel="stylesheet" href="/css/style.css?v=7">
+</head>
+<body>
+
+    <h3 th:text="#{lang-switcher-header}">Select language</h3>
+    <div class="block">
+        <div><a href="#" th:href="@{/(lang=en)}" th:text="#{en-lang-switch-button-caption}">Language - EN</a></div>
+        <div><a href="#" th:href="@{/(lang=ru)}" th:text="#{ru-lang-switch-button-caption}">Language - RU</a></div>
+    </div>
+
+    <div class="container">
+        <div class="position-div">
+            <table id="booksTable" class="block-table">
+                <thead>
+                <tr>
+                    <th th:text="#{books-table-header-title}">Title</th>
+                    <th th:text="#{books-table-header-author}">Author name</th>
+                    <th th:text="#{books-table-header-genre}">Genre name</th>
+                    <th>
+                        <a class="button-pointer" href="/createbook">
+                            <img th:src="@{/img/addicon25.png}" th:alt="#{book-add-title}" />
+                        </a>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            load from js function getBooks()
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div>
+                <button class="button-pointer button-add-align position-table-button" type="button"
+                        onclick="getBooks(1)" >>>
+                </button>
+                <span id="book-page-number" class="button-pointer button-add-align position-table-button">1</span>
+                <span id="book-total-pages" hidden>1</span>
+                <button class="button-pointer button-add-align" type="button" onclick="getBooks(-1)" ><<
+                </button>
+            </div>
+        </div>
+
+        <div class="position-div">
+            <table id="authorsTable" class="block-table">
+                <thead>
+                <tr>
+                    <th th:text="#{authors-table-header-name}">Author name</th>
+                </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            load from js function getAuthors()
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div>
+                <button class="button-pointer button-add-align position-table-button" type="button"
+                        onclick="getAuthors(1)" >>>
+                </button>
+                <span id="author-page-number" class="button-pointer button-add-align position-table-button">1</span>
+                <span id="author-total-pages" hidden>1</span>
+                <button class="button-pointer button-add-align" type="button" onclick="getAuthors(-1)" ><<
+                </button>
+            </div>
+        </div>
+
+        <div class="position-div">
+            <table id="genresTable" class="block-table">
+                <thead>
+                <tr>
+                    <th th:text="#{books-table-header-genre}">Genre name</th>
+                </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            load from js function getGenres()
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div>
+                <button class="button-pointer button-add-align position-table-button" type="button"
+                        onclick="getGenres(1)" >>>
+                </button>
+                <span id="genre-page-number" class="button-pointer button-add-align position-table-button">1</span>
+                <span id="genre-total-pages" hidden>1</span>
+                <button class="button-pointer button-add-align" type="button" onclick="getGenres(-1)" ><<
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <span id="book-delete-title" th:text="#{delete-title}" hidden></span>
+    <span id="book-delete-question" th:text="#{book-delete-question}" hidden></span>
+    <span id="connection-forbidden-error-text" th:text="#{connection-forbidden-error-text}" hidden></span>
+    <span id="connection-unknown-error-text" th:text="#{connection-unknown-error-text}" hidden></span>
+    <span id="data-rest-base-path" th:text="${dataRestBasePath}" hidden></span>
+
+    <script src="/js/listbook.js?v=15"></script>
+</body>
+</html>
