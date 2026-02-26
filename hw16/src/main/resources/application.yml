@@ -1,0 +1,44 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:maindb
+  h2:
+    console:
+      path: /h2-console
+      settings:
+        web-allow-others: false
+  shell:
+    interactive:
+      enabled: false
+  liquibase:
+    enabled: true
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+  data:
+    rest:
+      basePath: /datarest/api/v1/
+
+management:
+  server:
+    port: 8090
+  endpoints:
+    web:
+      exposure:
+        include: health, metrics, logfile
+  endpoint:
+    health:
+      enabled: true
+      probes:
+        enabled: true
+      show-details: always
+  health:
+    livenessstate:
+      enabled: true
+    readinessstate:
+      enabled: true
+
+logging:
+  file:
+    name: logs/hw16-actuator.log

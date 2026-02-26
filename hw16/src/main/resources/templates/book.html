@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{book-title-page}">Title</title>
+    <link rel="stylesheet" href="/css/style.css?v=7">
+</head>
+<body>
+
+    <div class="block">
+        <div><a href="#" th:href="@{/}" th:text="#{start-page-reference}">Start page</a></div>
+    </div>
+
+    <div class="block select-div container-view">
+        <div class="position-div">
+            <div class="block-view"><b th:text="|#{books-table-header-title}: |"></b><span id="book-title"></span></div>
+            <div class="block-view"><b th:text="|#{books-table-header-author}: |"></b><span id="author-full-name"></span></div>
+            <div><b th:text="|#{books-table-header-genre}: |"></b><span id="genres-names"></span></div>
+        </div>
+        <div class="position-div">
+            <a class="button-pointer" th:href="@{/editbook/{id}(id=${id})}">
+                <img th:src="@{/img/editicon64.png}" th:alt="#{book-edit-title}" />
+            </a>
+        </div>
+    </div>
+    <div id="response-error-text"></div>
+    <div class="select-div">
+        <div class="position-div">
+            <div class="block container-view">
+                <b th:text="#{book-comment-title}"></b>
+                <a class="button-pointer" th:href="@{/createcomment(bookId=${id})}">
+                    <img th:src="@{/img/addicon16.png}" th:alt="#{book-add-title}" />
+                </a>
+            </div>
+            <div id="comments-div">
+                load from js function getCommentsByBookId()
+            </div>
+        </div>
+    </div>
+
+    <span id="book-id" th:text="${id}" hidden></span>
+    <span id="delete-title" th:text="#{delete-title}" hidden></span>
+    <span id="comment-delete-question" th:text="#{comment-delete-question}" hidden></span>
+    <span id="book-title-page" th:text="#{book-title-page}" hidden></span>
+    <span id="connection-forbidden-error-text" th:text="#{connection-forbidden-error-text}" hidden></span>
+    <span id="connection-unknown-error-text" th:text="#{connection-unknown-error-text}" hidden></span>
+    <span id="data-rest-base-path" th:text="${dataRestBasePath}" hidden></span>
+
+    <script src="/js/book.js?v=11"></script>
+</body>
+</html>
