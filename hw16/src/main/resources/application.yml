@@ -26,7 +26,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: health, metrics
+        include: health, metrics, logfile
   endpoint:
     health:
       enabled: true
@@ -38,3 +38,7 @@ management:
       enabled: true
     readinessstate:
       enabled: true
+
+logging:
+  file:
+    name: logs/hw16-actuator.log
