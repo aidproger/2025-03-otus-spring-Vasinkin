@@ -16,6 +16,6 @@ public class CommentServiceImpl implements CommentService {
     @Transactional(readOnly = true)
     @Override
     public boolean existsByCreationDateAfter(LocalDateTime after) {
-        return !commentRepository.findByCreationDateAfter(after).isEmpty();
+        return commentRepository.existsByCreationDateAfter(after);
     }
 }

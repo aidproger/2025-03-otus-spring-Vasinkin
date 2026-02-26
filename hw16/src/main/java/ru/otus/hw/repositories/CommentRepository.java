@@ -11,9 +11,8 @@ import java.util.Optional;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
-    @EntityGraph(attributePaths = "book")
     @Transactional(readOnly = true)
-    List<Comment> findByCreationDateAfter(LocalDateTime after);
+    boolean existsByCreationDateAfter(LocalDateTime after);
 
     @EntityGraph(attributePaths = "book")
     @Transactional(readOnly = true)
@@ -23,4 +22,6 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     @Transactional(readOnly = true)
     @Override
     Optional<Comment> findById(Long aLong);
+
+
 }
