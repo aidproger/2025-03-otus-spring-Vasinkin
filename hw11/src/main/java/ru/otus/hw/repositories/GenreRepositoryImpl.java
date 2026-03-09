@@ -7,9 +7,13 @@ import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import ru.otus.hw.exceptions.GenresNotFoundException;
 import ru.otus.hw.models.Genre;
 
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Repository
@@ -32,7 +36,7 @@ public class GenreRepositoryImpl implements GenreRepository {
     }
 
     @Override
-    public Flux<Genre> findAllByIds(Set<String> ids) {
+    public Mono<List<Genre>> findAllByIds(Set<String> ids) {
         Aggregation aggregation = Aggregation.newAggregation(
                 Aggregation.unwind("genres"),
                 Aggregation.match(Criteria.where("genres._id").in(ids)),
@@ -43,6 +47,13 @@ public class GenreRepositoryImpl implements GenreRepository {
                         .and("_id.name").as("name"),
                 Aggregation.sort(Sort.by(Sort.Direction.ASC, "name")));
 
-        return reactiveMongoOperations.aggregate(aggregation, "books", Genre.class);
+        return reactiveMongoOperations.aggregate(aggregation, "books", Genre.class)
+                .collectList().doOnNext(genres -> {
+                    Set<String> genresIds = genres.stream()
+                            .map(Genre::getId).collect(Collectors.toSet());
+                    if (genresIds.size() != ids.size() || !genresIds.containsAll(ids)) {
+                        throw new GenresNotFoundException();
+                    }
+                });
     }
 }

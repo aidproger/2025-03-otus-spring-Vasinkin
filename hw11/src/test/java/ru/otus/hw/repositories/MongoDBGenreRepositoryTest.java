@@ -59,13 +59,8 @@ public class MongoDBGenreRepositoryTest {
 
         StepVerifier
                 .create(actualGenres)
-                .recordWith(ArrayList::new)
-                .thenConsumeWhile(genre -> true)
-                .consumeRecordedWith(actualList -> {
-                    assertThat(actualList)
-                            .hasSize(expectedGenres.size())
-                            .containsExactlyInAnyOrderElementsOf(expectedGenres);
-                })
+                .assertNext(genres -> assertThat(genres).hasSize(expectedGenres.size())
+                        .containsExactlyInAnyOrderElementsOf(expectedGenres))
                 .expectComplete()
                 .verify();
     }

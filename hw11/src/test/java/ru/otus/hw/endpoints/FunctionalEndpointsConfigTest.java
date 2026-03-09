@@ -24,6 +24,7 @@ import ru.otus.hw.repositories.CommentRepository;
 import ru.otus.hw.repositories.GenreRepository;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.mockito.BDDMockito.given;
 import static org.springframework.web.reactive.function.BodyInserters.fromValue;
@@ -187,6 +188,11 @@ public class FunctionalEndpointsConfigTest {
                 .bindToRouterFunction(bookRoutes)
                 .build();
 
+        given(authorRepository.findById(book.getAuthor().getId())).willReturn(Mono.just(book.getAuthor()));
+        given(genreRepository.findAllByIds(book.getGenres().stream()
+                .map(Genre::getId)
+                .collect(Collectors.toSet())))
+                .willReturn(Mono.just(book.getGenres()));
         given(bookRepository.save(book)).willReturn(expectedBook);
 
         client.post()
