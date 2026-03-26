@@ -1,0 +1,55 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2026-01-09--0003-well
+      author: aidproger
+      changes:
+        - createTable:
+            tableName: wells
+            columns:
+              - column:
+                  name: id
+                  type: bigserial
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_wells
+              - column:
+                  name: sgti_code
+                  type: varchar(256)
+              - column:
+                  name: code_name
+                  type: varchar(256)
+              - column:
+                  name: full_name
+                  type: varchar(256)
+              - column:
+                  name: creation_date
+                  type: timestamp
+                  defaultValueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: completion_date
+                  type: timestamp
+                  constraints:
+                    nullable: true
+              - column:
+                  name: begin_absolute_meter
+                  type: float
+                  constraints:
+                    nullable: true
+              - column:
+                  name: end_absolute_meter
+                  type: float
+                  constraints:
+                    nullable: true
+              - column:
+                  name: archive
+                  type: boolean
+              - column:
+                  name: department_id
+                  type: bigint
+                  constraints:
+                    nullable: true
+                    foreignKeyName: fk_well_wells_departments
+                    references: departments(id)
+                    deleteCascade: true

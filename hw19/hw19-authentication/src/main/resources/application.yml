@@ -1,0 +1,42 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://hw19-postgres:5432/authenticationdb
+#    url: jdbc:postgresql://localhost:5432/authenticationdb
+    username: postgres
+#    docker-compose
+    password: ${POSTGRES_PASSWORD}
+#    password: postgres
+  liquibase:
+    enabled: true
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+#  jmx:
+#    enabled: true
+
+management:
+  server:
+    port: 8090
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      enabled: true
+      probes:
+        enabled: true
+      show-details: always
+  health:
+    livenessstate:
+      enabled: true
+    readinessstate:
+      enabled: true
+
+jwt:
+  private.key: classpath:keys/app.key
+  public.key: classpath:keys/app.pub
+#  private.key: ./secrets/keys/app.key
+#  public.key: ./secrets/keys/app.pub

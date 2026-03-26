@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{authentication-success-title-page}">Welcome</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+    <div class="block">
+        <h3 th:text="#{authentication-success-caption}">Login successful</h3>
+    </div>
+
+    <div class="block">
+        <div><a href="#" th:href="@{/logout}" th:text="#{logout-reference}">Start page</a></div>
+    </div>
+
+</body>
+</html>

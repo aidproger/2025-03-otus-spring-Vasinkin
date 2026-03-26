@@ -1,0 +1,38 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2026-01-09--0002-department
+      author: aidproger
+      changes:
+        - createTable:
+            tableName: departments
+            columns:
+              - column:
+                  name: id
+                  type: bigserial
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_departments
+              - column:
+                  name: name
+                  type: varchar(256)
+              - column:
+                  name: is_default
+                  type: boolean
+              - column:
+                  name: departments_types_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_department_departments_department_type
+                    references: departments_types(id)
+                    deleteCascade: true
+              - column:
+                  name: parent_id
+                  type: bigint
+                  constraints:
+                    nullable: true
+                    foreignKeyName: fk_department_departments_departments
+                    references: departments(id)
+                    deleteCascade: true

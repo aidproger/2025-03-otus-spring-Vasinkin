@@ -1,0 +1,51 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2026-01-09--0002-role
+      author: aidproger
+      changes:
+        - createTable:
+            tableName: roles
+            columns:
+              - column:
+                  name: id
+                  type: bigserial
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_roles
+              - column:
+                  name: name
+                  type: varchar(100)
+                  constraints:
+                    unique: true
+  - changeSet:
+      id: 2026-01-09--0002-users-roles
+      author: aidproger
+      changes:
+        - createTable:
+            tableName: users_roles
+            columns:
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_users_roles_users_users
+                    references: users(id)
+                    deleteCascade: true
+              - column:
+                  name: role_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_users_roles_roles_roles
+                    references: roles(id)
+                    deleteCascade: true
+  - changeSet:
+      id: 2026-01-09--0002-users-roles-primary-key
+      author: aidproger
+      addPrimaryKey:
+        columnNames: user_id,role_id
+        constraintName: pk_users_roles
+        tableName: users_roles

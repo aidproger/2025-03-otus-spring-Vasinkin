@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <div class="block">
+    <div><a href="#" th:href="@{/}" th:text="#{start-page-reference}">Start page</a></div>
+  </div>
+
+  <div class="position-div">
+    <div class="container">
+      <div class="block">
+        <div class="block-select"><b th:text="|#{users-table-header-login}: |"></b></div>
+        <div class="block-select"><b th:text="|#{users-table-header-password}: |"></b></div>
+        <div class="block-select"><b th:text="|#{users-table-header-password-confirm}: |"></b></div>
+        <div class="block-select"><b th:text="|#{users-table-header-last-name}: |"></b></div>
+        <div class="block-select"><b th:text="|#{users-table-header-first-name}: |"></b></div>
+        <div class="block-select"><b th:text="|#{users-table-header-middle-name}: |"></b></div>
+        <div class="block-select"><b th:text="|#{users-table-header-active}: |"></b></div>
+        <div class="block-select2"><b th:text="|#{users-table-header-roles-names}: |"></b></div>
+      </div>
+      <div class="block position-div">
+        <div class="block-input">
+          <input id="user-login" type="text"/>
+        </div>
+        <div class="block-input">
+          <input id="user-password" type="password"/>
+        </div>
+        <div class="block-input">
+          <input id="user-password-confirmation" type="password"/>
+        </div>
+        <div class="block-input">
+            <input id="user-last-name" type="text"/>
+        </div>
+        <div class="block-input">
+          <input id="user-first-name" type="text"/>
+        </div>
+        <div class="block-input">
+          <input id="user-middle-name" type="text"/>
+        </div>
+        <div class="block">
+          <select id="select-active" required>
+              <option value="0" th:text="#{users-table-active-no}">No</option>
+              <option value="1" th:text="#{users-table-active-yes}">Yes</option>
+          </select>
+        </div>
+        <div class="block">
+          <select id="select-roles" multiple="multiple" size="3">
+          </select>
+        </div>
+        <div id="response-error-text"></div>
+        <button class="button-pointer button-add-align position-button" type="button"
+                onclick="saveUser()" th:text="#{save-button-caption}">Add
+        </button>
+        <a href="javascript:history.back()">
+          <button class="button-pointer button-add-align" type="button" th:text="#{cancel-button-caption}">
+            Cancel
+          </button>
+        </a>
+      </div>
+      <div class="block position-div">
+        <div class="block-select validate-text-error"><span id="user-login-error"></span></div>
+        <div class="block-select validate-text-error"><span id="user-password-error"></span></div>
+        <div class="block-select validate-text-error"><span id="user-password-confirmation-error"></span></div>
+        <div class="block-select validate-text-error"><span id="user-last-name-error"></span></div>
+        <div class="block-select validate-text-error"><span id="user-first-name-error"></span></div>
+        <div class="block-select validate-text-error"><span id="user-middle-name-error"></span></div>
+        <div class="block-select validate-text-error"><span id="select-active-error"></span></div>
+        <div class="block-select2 validate-text-error"><span id="select-roles-error"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <span id="id" th:text="${id}" hidden></span>
+  <span id="create-user-title-page" th:text="#{create-user-title-page}" hidden></span>
+  <span id="edit-user-title-page" th:text="#{edit-user-title-page}" hidden></span>
+  <span id="connection-forbidden-error-text" th:text="#{connection-forbidden-error-text}" hidden></span>
+  <span id="connection-unknown-error-text" th:text="#{unknown-error-text}" hidden></span>
+
+  <script src="/js/user.js"></script>
+
+</body>
+</html>

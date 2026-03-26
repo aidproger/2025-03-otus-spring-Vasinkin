@@ -1,0 +1,42 @@
+server:
+  port: 8070
+spring:
+  datasource:
+    url: jdbc:postgresql://hw19-postgres-admin:5432/administrationdb
+#    url: jdbc:postgresql://localhost:5433/administrationdb
+    username: postgres
+#    docker-compose
+    password: ${POSTGRES_PASSWORD}
+#    password: postgres
+  liquibase:
+    enabled: true
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+#  jmx:
+#    enabled: true
+
+management:
+  server:
+    port: 8091
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      enabled: true
+      probes:
+        enabled: true
+      show-details: always
+  health:
+    livenessstate:
+      enabled: true
+    readinessstate:
+      enabled: true
+
+jwt:
+  public.key: classpath:keys/app.pub
+#  public.key: ./secrets/keys/app.pub

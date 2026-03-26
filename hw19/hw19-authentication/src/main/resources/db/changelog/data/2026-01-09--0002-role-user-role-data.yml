@@ -1,0 +1,26 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2026-01-09--0002-role-data
+      author: aidproger
+      context: data
+      runOnChange: true
+      loadData:
+        file: data/2026-01-09--0002-roles.csv
+        relativeToChangelogFile: true
+        separator: ;
+        quotChar: '"'
+        encoding: UTF-8
+        tableName: roles
+  - changeSet:
+      id: 2026-01-09--0002-user-role-data
+      author: aidproger
+      context: data
+      runOnChange: true
+      loadUpdateData:
+        primaryKey: user_id,role_id
+        file: data/2026-01-09--0003-users-roles.csv
+        relativeToChangelogFile: true
+        separator: ;
+        quotChar: '"'
+        encoding: UTF-8
+        tableName: users_roles
